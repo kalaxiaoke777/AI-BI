@@ -1,0 +1,78 @@
+.fund-detail-container {
+  padding: 0;
+  margin: 0;
+  
+  .back-button {
+    margin-bottom: 16px;
+    color: #1890ff;
+  }
+  
+  .page-title {
+    margin-bottom: 24px;
+    color: #1890ff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    
+    .title-icon {
+      margin-right: 8px;
+    }
+  }
+  
+  .basic-info-card {
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .chart-card {
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .manager-card {
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .growth-chart {
+    width: 100%;
+    height: 400px;
+  }
+  
+  .loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    font-size: 18px;
+  }
+  
+  .manager-avatar {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f0f2f5;
+    margin: 0 auto;
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .page-title {
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    
+    .basic-info-card,
+    .chart-card,
+    .manager-card {
+      margin-bottom: 16px;
+    }
+    
+    .growth-chart {
+      height: 300px;
+    }
+  }
+}

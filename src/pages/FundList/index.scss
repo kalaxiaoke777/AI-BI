@@ -1,0 +1,62 @@
+.fund-list-container {
+  padding: 0;
+  margin: 0;
+  
+  .page-title {
+    margin-bottom: 24px;
+    color: #1890ff;
+    font-weight: 600;
+  }
+  
+  .search-card {
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .search-card .ant-card-head {
+    background-color: #fafafa;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  
+  .fund-table {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  .fund-name-link {
+    display: flex;
+    align-items: center;
+    color: #1890ff;
+    text-decoration: none;
+    
+    &:hover {
+      color: #40a9ff;
+      text-decoration: underline;
+    }
+  }
+  
+  .fund-icon {
+    margin-right: 4px;
+  }
+  
+  .growth-positive {
+    color: #52c41a;
+    font-weight: 500;
+  }
+  
+  .growth-negative {
+    color: #ff4d4f;
+    font-weight: 500;
+  }
+  
+  /* 响应式设计 */
+  @media (max-width: 768px) {
+    .search-card {
+      margin-bottom: 16px;
+    }
+    
+    .page-title {
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+  }
+}
