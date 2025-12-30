@@ -36,52 +36,57 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      <Card className="login-card" title={<Title level={2} className="login-title">基金理财平台</Title>}>
-        <Form
-          name="login-form"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          layout="vertical"
-        >
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: '请输入用户名!' }]}
-            label="用户名"
+      <div className="login-image-section">
+        <img src="/image.png" alt="基金理财平台" className="login-image" />
+      </div>
+      <div className="login-form-section">
+        <Card className="login-card" title={<Title level={2} className="login-title">基金理财平台</Title>}>
+          <Form
+            name="login-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            layout="vertical"
           >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="请输入用户名"
-              size="large"
-            />
-          </Form.Item>
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: '请输入用户名!' }]}
+              label="用户名"
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="请输入用户名"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: '请输入密码!' }]}
-            label="密码"
-          >
-            <Input.Password
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="请输入密码"
-              size="large"
-            />
-          </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: '请输入密码!' }]}
+              label="密码"
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="请输入密码"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-button" size="large" loading={loading}>
-              登录
-            </Button>
-          </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="login-button" size="large" loading={loading}>
+                登录
+              </Button>
+            </Form.Item>
 
-          <Form.Item className="login-footer">
-            <Space orientation="vertical" size="small" style={{ display: 'flex' }}>
-              <span>还没有账号？ <Link to="/register">立即注册</Link></span>
-              <span>忘记密码？ <a href="#">点击找回</a></span>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Card>
+            <Form.Item className="login-footer">
+              <Space orientation="vertical" size="small" style={{ display: 'flex' }}>
+                <span>还没有账号？ <Link to="/register">立即注册</Link></span>
+                <span>忘记密码？ <a href="#">点击找回</a></span>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
     </div>
   );
 };

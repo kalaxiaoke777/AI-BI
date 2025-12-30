@@ -108,6 +108,11 @@ const Header: React.FC = () => {
         className="nav-menu"
         items={[
           {
+            key: 'index',
+            icon: <LineChartOutlined />,
+            label: <Link to="/index">指数分析</Link>,
+          },
+          {
             key: 'funds',
             icon: <FundOutlined />,
             label: <Link to="/funds">基金列表</Link>,
@@ -127,11 +132,7 @@ const Header: React.FC = () => {
             icon: <BarChartOutlined />,
             label: <Link to="/rank">基金排行</Link>,
           },
-          {
-            key: 'index',
-            icon: <LineChartOutlined />,
-            label: <Link to="/index">指数分析</Link>,
-          },
+
         ]}
       />
       

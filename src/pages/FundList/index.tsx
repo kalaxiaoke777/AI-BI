@@ -118,13 +118,6 @@ const FundList: React.FC = () => {
       sorter: true,
     },
     {
-      title: '基金经理',
-      dataIndex: 'manager',
-      key: 'manager',
-      width: 120,
-      sorter: true,
-    },
-    {
       title: '最新净值',
       dataIndex: 'latest_nav',
       key: 'latest_nav',
@@ -153,18 +146,18 @@ const FundList: React.FC = () => {
       ),
     },
     {
-      title: '风险等级',
-      dataIndex: 'risk_level',
-      key: 'risk_level',
+      title: '申购费率',
+      dataIndex: 'purchase_fee',
+      key: 'purchase_fee',
       width: 100,
       sorter: true,
-      render: (level: number) => {
-        const stars = [];
-        for (let i = 0; i < Math.floor(level); i++) {
-          stars.push(<span key={i} style={{ color: '#fadb14', marginRight: '2px' }}>★</span>);
-        }
-        return stars;
-      },
+    },
+    {
+      title: '赎回费率',
+      dataIndex: 'purchase_fee_rate',
+      key: 'purchase_fee_rate',
+      width: 100,
+      sorter: true,
     },
     {
       title: '操作',
@@ -224,24 +217,26 @@ const FundList: React.FC = () => {
       </Card>
 
       {/* 基金列表表格 */}
-      <Table
-        columns={columns}
-        dataSource={list}
-        rowKey="id"
-        loading={loading}
-        pagination={{
-          current: pagination.page,
-          pageSize: pagination.page_size,
-          total: pagination.total,
-          showSizeChanger: true,
-          pageSizeOptions: ['10', '20', '50', '100'],
-          onChange: handlePageChange,
-          showTotal: (total) => `共 ${total} 条记录`,
-        }}
-        onChange={handleTableChange}
-        scroll={{ x: 1200 }}
-        className="fund-table"
-      />
+      <div className="fund-table-wrapper">
+        <Table
+          columns={columns}
+          dataSource={list}
+          rowKey="id"
+          loading={loading}
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.page_size,
+            total: pagination.total,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            onChange: handlePageChange,
+            showTotal: (total) => `共 ${total} 条记录`,
+          }}
+          onChange={handleTableChange}
+          scroll={{ x: 1200 }}
+          className="fund-table"
+        />
+      </div>
     </div>
   );
 };

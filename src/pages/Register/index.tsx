@@ -36,87 +36,92 @@ const Register: React.FC = () => {
 
   return (
     <div className="register-container">
-      <Card className="register-card" title={<Title level={2} className="register-title">基金理财平台</Title>}>
-        <Form
-          name="register-form"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          layout="vertical"
-        >
-          <Form.Item
-            name="username"
-            rules={[{ required: true, message: '请输入用户名!' }, { min: 4, max: 20, message: '用户名长度必须在4-20个字符之间' }]}
-            label="用户名"
+      <div className="register-image-section">
+        <img src="/image.png" alt="基金理财平台" className="register-image" />
+      </div>
+      <div className="register-form-section">
+        <Card className="register-card" title={<Title level={2} className="register-title">基金理财平台</Title>}>
+          <Form
+            name="register-form"
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            layout="vertical"
           >
-            <Input
-              prefix={<UserOutlined className="site-form-item-icon" />}
-              placeholder="请输入用户名"
-              size="large"
-            />
-          </Form.Item>
+            <Form.Item
+              name="username"
+              rules={[{ required: true, message: '请输入用户名!' }, { min: 4, max: 20, message: '用户名长度必须在4-20个字符之间' }]}
+              label="用户名"
+            >
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder="请输入用户名"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: '请输入邮箱!' }, { type: 'email', message: '请输入有效的邮箱地址' }]}
-            label="邮箱"
-          >
-            <Input
-              prefix={<MailOutlined className="site-form-item-icon" />}
-              placeholder="请输入邮箱"
-              size="large"
-            />
-          </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[{ required: true, message: '请输入邮箱!' }, { type: 'email', message: '请输入有效的邮箱地址' }]}
+              label="邮箱"
+            >
+              <Input
+                prefix={<MailOutlined className="site-form-item-icon" />}
+                placeholder="请输入邮箱"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: '请输入密码!' }, { min: 6, message: '密码长度必须至少6个字符' }]}
-            label="密码"
-          >
-            <Input.Password
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="请输入密码"
-              size="large"
-            />
-          </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[{ required: true, message: '请输入密码!' }, { min: 6, message: '密码长度必须至少6个字符' }]}
+              label="密码"
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="请输入密码"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item
-            name="confirm_password"
-            dependencies={['password']}
-            rules={[
-              { required: true, message: '请确认密码!' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('password') === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(new Error('两次输入的密码不一致!'));
-                },
-              }),
-            ]}
-            label="确认密码"
-          >
-            <Input.Password
-              prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
-              placeholder="请确认密码"
-              size="large"
-            />
-          </Form.Item>
+            <Form.Item
+              name="confirm_password"
+              dependencies={['password']}
+              rules={[
+                { required: true, message: '请确认密码!' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('两次输入的密码不一致!'));
+                  },
+                }),
+              ]}
+              label="确认密码"
+            >
+              <Input.Password
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="请确认密码"
+                size="large"
+              />
+            </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="register-button" size="large" loading={loading}>
-              注册
-            </Button>
-          </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" className="register-button" size="large" loading={loading}>
+                注册
+              </Button>
+            </Form.Item>
 
-          <Form.Item className="register-footer">
-            <Space orientation="vertical" size="small" style={{ display: 'flex' }}>
-              <span>已有账号？ <Link to="/login">立即登录</Link></span>
-            </Space>
-          </Form.Item>
-        </Form>
-      </Card>
+            <Form.Item className="register-footer">
+              <Space orientation="vertical" size="small" style={{ display: 'flex' }}>
+                <span>已有账号？ <Link to="/login">立即登录</Link></span>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Card>
+      </div>
     </div>
   );
 };

@@ -1,5 +1,8 @@
 .main-layout {
-  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
   background-color: #f0f2f5;
 }
 
@@ -7,16 +10,19 @@
   margin: 0;
   background-color: #f0f2f5;
   padding: 0;
+  flex: 1;
+  overflow: hidden;
 }
 
 .main-content {
-  min-height: calc(100vh - 64px);
+  height: 100%;
   background-color: #fff;
   padding: 24px;
   margin: 24px;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s;
+  overflow: hidden;
 }
 
 /* 响应式设计 */
