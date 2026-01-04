@@ -46,6 +46,7 @@ export interface UserState {
   isAuthenticated: boolean;
   token: string | null;
   userInfo: UserInfo | null;
+  users: UserInfo[] | null;
   loading: boolean;
   error: string | null;
 }

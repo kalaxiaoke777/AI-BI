@@ -10,6 +10,18 @@ import {
   GET_CURRENT_USER_REQUEST,
   GET_CURRENT_USER_SUCCESS,
   GET_CURRENT_USER_FAILURE,
+  GET_USERS_REQUEST,
+  GET_USERS_SUCCESS,
+  GET_USERS_FAILURE,
+  GET_USER_REQUEST,
+  GET_USER_SUCCESS,
+  GET_USER_FAILURE,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAILURE,
 } from '../actions/userActions';
 import type { LoginRequest, RegisterRequest } from '../../types/user';
 
@@ -47,12 +59,60 @@ export function* getCurrentUserSaga() {
   }
 }
 
+// 获取用户列表saga
+export function* getUsersSaga() {
+  try {
+    const response = yield call(api.get, '/user/users');
+    yield put({ type: GET_USERS_SUCCESS, payload: response });
+  } catch (error: any) {
+    yield put({ type: GET_USERS_FAILURE, payload: error.response.data.detail || '获取用户列表失败' });
+  }
+}
+
+// 获取单个用户saga
+export function* getUserSaga(action: any) {
+  try {
+    const { payload }: { payload: number } = action;
+    const response = yield call(api.get, `/user/users/${payload}`);
+    yield put({ type: GET_USER_SUCCESS, payload: response });
+  } catch (error: any) {
+    yield put({ type: GET_USER_FAILURE, payload: error.response.data.detail || '获取用户失败' });
+  }
+}
+
+// 更新用户saga
+export function* updateUserSaga(action: any) {
+  try {
+    const { payload } = action;
+    const { id, ...userData } = payload;
+    const response = yield call(api.put, `/user/users/${id}`, userData);
+    yield put({ type: UPDATE_USER_SUCCESS, payload: response });
+  } catch (error: any) {
+    yield put({ type: UPDATE_USER_FAILURE, payload: error.response.data.detail || '更新用户失败' });
+  }
+}
+
+// 删除用户saga
+export function* deleteUserSaga(action: any) {
+  try {
+    const { payload }: { payload: number } = action;
+    yield call(api.delete, `/user/users/${payload}`);
+    yield put({ type: DELETE_USER_SUCCESS, payload });
+  } catch (error: any) {
+    yield put({ type: DELETE_USER_FAILURE, payload: error.response.data.detail || '删除用户失败' });
+  }
+}
+
 // 监听action
 export function* watchUserSaga() {
   yield all([
     takeLatest(LOGIN_REQUEST, loginSaga),
     takeLatest(REGISTER_REQUEST, registerSaga),
     takeLatest(GET_CURRENT_USER_REQUEST, getCurrentUserSaga),
+    takeLatest(GET_USERS_REQUEST, getUsersSaga),
+    takeLatest(GET_USER_REQUEST, getUserSaga),
+    takeLatest(UPDATE_USER_REQUEST, updateUserSaga),
+    takeLatest(DELETE_USER_REQUEST, deleteUserSaga),
   ]);
 }
 

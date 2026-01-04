@@ -30,7 +30,12 @@ const Header: React.FC = () => {
       setCurrent('rank');
     } else if (path.startsWith('/index')) {
       setCurrent('index');
+    } else if (path.startsWith('/users')) {
+      setCurrent('users');
+    } else {
+      setCurrent('index');
     }
+
   }, [location.pathname]);
 
   // 处理菜单项点击
@@ -132,12 +137,17 @@ const Header: React.FC = () => {
             icon: <BarChartOutlined />,
             label: <Link to="/rank">基金排行</Link>,
           },
+          {
+            key: 'users',
+            icon: <UserOutlined />,
+            label: <Link to="/users">用户管理</Link>,
+          },
 
         ]}
       />
       
       <div className="user-info">
-        <Dropdown overlay={userMenu} trigger={['click']}>
+        <Dropdown menu={{ items: userMenu?.props?.items }} trigger={['click']}>
           <Button type="text" className="user-button">
             <Avatar src={userInfo.avatar} icon={<UserOutlined />} />
             <span className="username">{userInfo.username}</span>
