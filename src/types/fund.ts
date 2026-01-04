@@ -16,6 +16,7 @@ export interface FundBasic {
   purchase_min_amount: number;
   redemption_min_amount: number;
   risk_level: number;
+  daily_growth: number;
   created_at: string;
   updated_at: string;
 }

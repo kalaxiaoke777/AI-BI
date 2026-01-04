@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState,useMemo } from 'react';
 import { Table, Input, Select, Button, Space, Typography, Card, Row, Col } from 'antd';
 import { SearchOutlined, FundOutlined, LineChartOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,6 +11,15 @@ const { Title } = Typography;
 const { Search } = Input;
 const { Option } = Select;
 
+// 防抖函数
+const debounce = <T extends (...args: any[]) => any>(func: T, delay: number) => {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
+
 const FundList: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -21,6 +30,23 @@ const FundList: React.FC = () => {
     page: 1,
     page_size: 10,
   });
+  
+  // 创建防抖搜索函数，延迟300ms
+  const debouncedSearch = useMemo(
+    () => debounce((values: any) => {
+      const params: FundFilters = {
+        ...searchParams,
+        ...values,
+        page: 1,
+        // 保留当前排序条件（如果有的话）
+        ...(filters.sort_by && { sort_by: filters.sort_by }),
+        ...(filters.sort_order && { sort_order: filters.sort_order }),
+      };
+      setSearchParams(params);
+      dispatch(fetchFundsRequest(params));
+    }, 300),
+    [searchParams, filters.sort_by, filters.sort_order, dispatch]
+  );
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -29,39 +55,49 @@ const FundList: React.FC = () => {
     }
   }, []);
 
-  // 搜索基金
+  // 搜索基金（用于直接调用，无防抖）
   const handleSearch = (values: any) => {
     const params: FundFilters = {
       ...searchParams,
       ...values,
       page: 1,
+      // 保留当前排序条件（如果有的话）
+      ...(filters.sort_by && { sort_by: filters.sort_by }),
+      ...(filters.sort_order && { sort_order: filters.sort_order }),
     };
     setSearchParams(params);
     dispatch(fetchFundsRequest(params));
   };
 
-  // 分页变化
-  const handlePageChange = (page: number, pageSize: number) => {
-    const params = {
-      ...searchParams,
-      page,
-      page_size: pageSize,
-    };
-    setSearchParams(params);
-    dispatch(fetchFundsRequest(params));
-  };
-
-  // 排序变化
+  // 统一处理表格变化（排序、分页、筛选）
   const handleTableChange = (pagination: any, filters: any, sorter: any) => {
-    // 只有在有排序字段时才更新
-    if (sorter.field) {
-      const params = {
-        ...searchParams,
+    // 构建新的搜索参数
+    let newParams: FundFilters = {
+      ...searchParams,
+      page: pagination.current,
+      page_size: pagination.pageSize,
+    };
+    
+    // 处理排序
+    if (sorter.field && sorter.order) {
+      newParams = {
+        ...newParams,
         sort_by: sorter.field,
         sort_order: sorter.order === 'ascend' ? 'asc' : 'desc',
       };
-      setSearchParams(params);
-      dispatch(fetchFundsRequest(params));
+    } else if (sorter.field && !sorter.order) {
+      // 取消排序
+      newParams = {
+        ...newParams,
+        sort_by: undefined,
+        sort_order: undefined,
+      };
+    }
+    
+    // 只在参数变化时才发送请求
+    if (JSON.stringify(newParams) !== JSON.stringify(searchParams)) {
+      setSearchParams(newParams);
+      dispatch(fetchFundsRequest(newParams));
     }
   };
 
@@ -183,19 +219,19 @@ const FundList: React.FC = () => {
           <Col xs={24} sm={12} md={8} lg={6}>
             <Space orientation="vertical" size="small" style={{ width: '100%' }}>
               <span>基金代码</span>
-              <Input placeholder="请输入基金代码" onChange={(e) => handleSearch({ fund_code: e.target.value })} />
+              <Input placeholder="请输入基金代码" onChange={(e) => debouncedSearch({ fund_code: e.target.value })} />
             </Space>
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
             <Space orientation="vertical" size="small" style={{ width: '100%' }}>
               <span>基金名称</span>
-              <Input placeholder="请输入基金名称" onChange={(e) => handleSearch({ fund_name: e.target.value })} />
+              <Input placeholder="请输入基金名称" onChange={(e) => debouncedSearch({ fund_name: e.target.value })} />
             </Space>
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
             <Space orientation="vertical" size="small" style={{ width: '100%' }}>
               <span>基金类型</span>
-              <Select placeholder="请选择基金类型" onChange={(value) => handleSearch({ fund_type: value })} style={{ width: '100%' }}>
+              <Select placeholder="请选择基金类型" onChange={(value) => debouncedSearch({ fund_type: value })} style={{ width: '100%' }}>
                 <Option value={1}>混合型</Option>
                 <Option value={2}>股票型</Option>
                 <Option value={3}>债券型</Option>
@@ -207,7 +243,7 @@ const FundList: React.FC = () => {
           <Col xs={24} sm={12} md={8} lg={6}>
             <Space orientation="vertical" size="small" style={{ width: '100%' }}>
               <span>可购买</span>
-              <Select placeholder="是否可购买" onChange={(value) => handleSearch({ is_purchaseable: value })} style={{ width: '100%' }}>
+              <Select placeholder="是否可购买" onChange={(value) => debouncedSearch({ is_purchaseable: value })} style={{ width: '100%' }}>
                 <Option value={true}>是</Option>
                 <Option value={false}>否</Option>
               </Select>
@@ -229,7 +265,6 @@ const FundList: React.FC = () => {
             total: pagination.total,
             showSizeChanger: true,
             pageSizeOptions: ['10', '20', '50', '100'],
-            onChange: handlePageChange,
             showTotal: (total) => `共 ${total} 条记录`,
           }}
           onChange={handleTableChange}
