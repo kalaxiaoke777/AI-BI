@@ -20,7 +20,11 @@ const Header: React.FC = () => {
   // 根据当前路由设置菜单选中状态
   useEffect(() => {
     const path = location.pathname;
-    if (path.startsWith('/funds')) {
+    
+    // 如果是用户相关路由，不高亮任何顶部导航项
+    if (path.startsWith('/user/')) {
+      setCurrent('');
+    } else if (path.startsWith('/funds')) {
       setCurrent('funds');
     } else if (path.startsWith('/companies')) {
       setCurrent('companies');
@@ -50,51 +54,6 @@ const Header: React.FC = () => {
     // 重定向到登录页
     navigate('/login');
   };
-
-  // 用户下拉菜单
-  const userMenu = (
-    <Menu 
-      onClick={({ key }) => {
-        if (key === 'logout') {
-          handleLogout();
-        } else {
-          navigate(key);
-        }
-      }}
-      items={[
-        {
-          key: '/user/profile',
-          icon: <UserOutlined />,
-          label: '个人信息',
-        },
-        {
-          key: '/user/favorites',
-          icon: <StarOutlined />,
-          label: '自选基金',
-        },
-        {
-          key: '/user/holdings',
-          icon: <WalletOutlined />,
-          label: '持有基金',
-        },
-        {
-          key: '/user/transactions',
-          icon: <HistoryOutlined />,
-          label: '交易记录',
-        },
-        {
-          key: '/user/profit',
-          icon: <BarChartOutlined />,
-          label: '收益分析',
-        },
-        {
-          key: 'logout',
-          icon: <LogoutOutlined />,
-          label: '退出登录',
-        },
-      ]}
-    />
-  );
 
   // 构建导航菜单，根据用户角色显示或隐藏用户管理菜单
   const navItems = [
@@ -133,6 +92,52 @@ const Header: React.FC = () => {
       label: <Link to="/users">用户管理</Link>,
     });
   }
+
+  // 下拉菜单点击处理
+  const handleDropdownMenuClick = (menuItem: any) => {
+    const key = menuItem.key;
+    console.log('Dropdown menu clicked:', key);
+    
+    if (key === 'logout') {
+      handleLogout();
+    } else {
+      navigate(key);
+    }
+  };
+
+  // 用户下拉菜单项
+  const dropdownMenuItems = [
+    {
+      key: '/user/profile',
+      icon: <UserOutlined />,
+      label: '个人信息',
+    },
+    {
+      key: '/user/favorites',
+      icon: <StarOutlined />,
+      label: '自选基金',
+    },
+    {
+      key: '/user/holdings',
+      icon: <WalletOutlined />,
+      label: '持有基金',
+    },
+    {
+      key: '/user/transactions',
+      icon: <HistoryOutlined />,
+      label: '交易记录',
+    },
+    {
+      key: '/user/profit',
+      icon: <BarChartOutlined />,
+      label: '收益分析',
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: '退出登录',
+    },
+  ];
   
   return (
     <AntHeader className={styles.header}>
@@ -148,16 +153,22 @@ const Header: React.FC = () => {
         mode="horizontal"
         selectedKeys={[current]}
         onClick={handleMenuClick}
-        className={styles.navMenu}
+        className={styles['nav-menu']}
         items={navItems}
       />
       
       {isAuthenticated && userInfo && (
-        <div className={styles.userInfo}>
-          <Dropdown menu={{ items: userMenu?.props?.items }} trigger={['click']}>
-            <Button type="text" className={styles.userButton}>
+        <div className={styles['user-info']}>
+          <Dropdown 
+            menu={{ 
+              items: dropdownMenuItems,
+              onClick: handleDropdownMenuClick
+            }} 
+            trigger={['click']}
+          >
+            <Button type="text" className={styles['user-button']}>
               <Avatar icon={<UserOutlined />} />
-              <span className={styles.username}>{userInfo.username}</span>
+              <span className={styles['username']}>{userInfo.username}</span>
             </Button>
           </Dropdown>
         </div>

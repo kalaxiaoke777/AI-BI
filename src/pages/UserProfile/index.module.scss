@@ -13,11 +13,45 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.placeholderContent {
-  padding: 20px 0;
-  text-align: center;
-  color: #666;
-  font-size: 16px;
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 8px;
+}
+
+.avatarLarge {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: #e6f7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  border: 2px solid #1890ff;
+}
+
+.usernameLarge {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.editButton {
+  margin-top: 8px;
+}
+
+.ant-descriptions-item-label {
+  background-color: #fafafa;
+  font-weight: 600;
+}
+
+.ant-descriptions-item-content {
+  background-color: #fff;
 }
 
 /* 响应式设计 */
@@ -26,9 +60,17 @@
     margin: 16px;
   }
   
-  .placeholderContent {
-    padding: 16px 0;
-    font-size: 14px;
+  .avatarSection {
+    padding: 16px;
+  }
+  
+  .avatarLarge {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .usernameLarge {
+    font-size: 18px;
   }
 }
 
@@ -37,8 +79,16 @@
     margin: 8px;
   }
   
-  .placeholderContent {
-    padding: 12px 0;
-    font-size: 13px;
+  .avatarSection {
+    padding: 12px;
+  }
+  
+  .avatarLarge {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .usernameLarge {
+    font-size: 16px;
   }
 }

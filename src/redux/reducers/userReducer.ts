@@ -24,11 +24,25 @@ import {
   DELETE_USER_FAILURE, 
 } from '../actions/userActions';
 
+// 从localStorage获取用户信息
+const getLocalStorageUserInfo = () => {
+  const userInfoStr = localStorage.getItem('userInfo');
+  if (userInfoStr) {
+    try {
+      return JSON.parse(userInfoStr);
+    } catch (error) {
+      console.error('Failed to parse userInfo from localStorage:', error);
+      return null;
+    }
+  }
+  return null;
+};
+
 // 初始状态
 const initialState: UserState = {
-  isAuthenticated: false,
+  isAuthenticated: !!localStorage.getItem('token'),
   token: localStorage.getItem('token') || null,
-  userInfo: null,
+  userInfo: getLocalStorageUserInfo(),
   users: null,
   loading: false,
   error: null,
@@ -46,6 +60,9 @@ const userReducer = (state = initialState, action: any): UserState => {
         error: null,
       };
     case LOGIN_SUCCESS:
+      // 保存到localStorage
+      localStorage.setItem('token', action.payload.access_token);
+      localStorage.setItem('userInfo', JSON.stringify(action.payload.user_info));
       return {
         ...state,
         isAuthenticated: true,
@@ -69,6 +86,9 @@ const userReducer = (state = initialState, action: any): UserState => {
         error: action.payload,
       };
     case LOGOUT:
+      // 从localStorage移除
+      localStorage.removeItem('token');
+      localStorage.removeItem('userInfo');
       return {
         ...state,
         isAuthenticated: false,
@@ -78,6 +98,8 @@ const userReducer = (state = initialState, action: any): UserState => {
         error: null,
       };
     case GET_CURRENT_USER_SUCCESS:
+      // 保存到localStorage
+      localStorage.setItem('userInfo', JSON.stringify(action.payload));
       return {
         ...state,
         isAuthenticated: true,

@@ -7,6 +7,7 @@ export interface UserInfo {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+  last_login?: string;
 }
 
 // 登录请求参数类型
