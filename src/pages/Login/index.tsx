@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { loginRequest } from '../../redux/actions/userActions';
-import './index.scss';
+import styles from './index.module.scss';
 
 const { Title } = Typography;
 
@@ -35,12 +35,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-image-section">
-        <img src="/image.png" alt="基金理财平台" className="login-image" />
+    <div className={styles.loginContainer}>
+      <div className={styles.loginImageSection}>
+        <img src="/image.png" alt="基金理财平台" className={styles.loginImage} />
       </div>
-      <div className="login-form-section">
-        <Card className="login-card" title={<Title level={2} className="login-title">基金理财平台</Title>}>
+      <div className={styles.loginFormSection}>
+        <Card className={styles.loginCard} title={<Title level={2} className={styles.loginTitle}>基金理财平台</Title>}>
           <Form
             name="login-form"
             initialValues={{ remember: true }}
@@ -53,7 +53,7 @@ const Login: React.FC = () => {
               label="用户名"
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={<UserOutlined className={styles.siteFormItemIcon} />}
                 placeholder="请输入用户名"
                 size="large"
               />
@@ -65,7 +65,7 @@ const Login: React.FC = () => {
               label="密码"
             >
               <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={<LockOutlined className={styles.siteFormItemIcon} />}
                 type="password"
                 placeholder="请输入密码"
                 size="large"
@@ -73,12 +73,12 @@ const Login: React.FC = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-button" size="large" loading={loading}>
+              <Button type="primary" htmlType="submit" className={styles.loginButton} size="large" loading={loading}>
                 登录
               </Button>
             </Form.Item>
 
-            <Form.Item className="login-footer">
+            <Form.Item className={styles.loginFooter}>
               <Space orientation="vertical" size="small" style={{ display: 'flex' }}>
                 <span>还没有账号？ <Link to="/register">立即注册</Link></span>
                 <span>忘记密码？ <a href="#">点击找回</a></span>

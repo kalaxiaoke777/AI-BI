@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchFundsRequest } from '../../redux/actions/fundActions';
 import type { FundBasic, FundFilters } from '../../types/fund';
-import './index.scss';
+import styles from './index.module.scss';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -126,8 +126,8 @@ const FundList: React.FC = () => {
       key: 'fund_name',
       sorter: true,
       render: (text: string, record: FundBasic) => (
-        <Link to={`/funds/${record.id}`} className="fund-name-link">
-          <FundOutlined className="fund-icon" /> {text}
+        <Link to={`/funds/${record.id}`} className={styles['fund-name-link']}>
+          <FundOutlined className={styles['fund-icon']} /> {text}
         </Link>
       ),
     },
@@ -176,7 +176,7 @@ const FundList: React.FC = () => {
       width: 100,
       sorter: true,
       render: (growth: number) => (
-        <span className={growth > 0 ? 'growth-positive' : growth < 0 ? 'growth-negative' : ''}>
+        <span className={growth > 0 ? styles['growth-positive'] : growth < 0 ? styles['growth-negative'] : ''}>
           {growth != null ? `${growth > 0 ? '+' : ''}${growth.toFixed(2)}%` : '-'}
         </span>
       ),
@@ -210,11 +210,11 @@ const FundList: React.FC = () => {
   ];
 
   return (
-    <div className="fund-list-container">
-      <Title level={2} className="page-title">基金列表</Title>
+    <div className={styles['fund-list-container']}>
+      <Title level={2} className={styles['page-title']}>基金列表</Title>
       
       {/* 搜索筛选卡片 */}
-      <Card className="search-card" title="筛选条件" size="small">
+      <Card className={styles['search-card']} title="筛选条件" size="small">
         <Row gutter={16} align="middle">
           <Col xs={24} sm={12} md={8} lg={6}>
             <Space orientation="vertical" size="small" style={{ width: '100%' }}>
@@ -253,7 +253,7 @@ const FundList: React.FC = () => {
       </Card>
 
       {/* 基金列表表格 */}
-      <div className="fund-table-wrapper">
+      <div className={styles['fund-table-wrapper']}>
         <Table
           columns={columns}
           dataSource={list}
@@ -269,7 +269,7 @@ const FundList: React.FC = () => {
           }}
           onChange={handleTableChange}
           scroll={{ x: 1200 }}
-          className="fund-table"
+          className={styles['fund-table']}
         />
       </div>
     </div>

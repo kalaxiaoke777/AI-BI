@@ -1,0 +1,52 @@
+.userManagementContainer {
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.userManagementCard {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+.userManagementHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.userManagementActions {
+  display: flex;
+  gap: 10px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .userManagementContainer {
+    padding: 10px;
+  }
+  
+  .userManagementHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .userManagementActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .userManagementContainer {
+    padding: 5px;
+  }
+  
+  .userManagementCard {
+    margin: 0;
+  }
+}

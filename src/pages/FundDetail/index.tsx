@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchFundDetailRequest, fetchFundGrowthRequest } from '../../redux/actions/fundActions';
 import * as echarts from 'echarts';
-import './index.scss';
+import styles from './index.module.scss';
 
 const { Title, Text } = Typography;
 
@@ -172,27 +172,27 @@ const FundDetail: React.FC = () => {
   };
 
   if (loading || !detail) {
-    return <div className="loading-container">加载中...</div>;
+    return <div className={styles['loading-container']}>加载中...</div>;
   }
 
   return (
-    <div className="fund-detail-container">
+    <div className={styles['fund-detail-container']}>
       <Button 
         type="text" 
         icon={<ArrowLeftOutlined />} 
         onClick={handleBack}
-        className="back-button"
+        className={styles['back-button']}
       >
         返回基金列表
       </Button>
       
-      <Title level={2} className="page-title">
-        <FundOutlined className="title-icon" />
+      <Title level={2} className={styles['page-title']}>
+        <FundOutlined className={styles['title-icon']} />
         {detail.fund_name}
       </Title>
       
       {/* 基金基本信息卡片 */}
-      <Card className="basic-info-card" title="基本信息" size="small" loading={loading}>
+      <Card className={styles['basic-info-card']} title="基本信息" size="small" loading={loading}>
         <Row gutter={16}>
           <Col xs={24} sm={12} md={6}>
             <Statistic 
@@ -268,15 +268,15 @@ const FundDetail: React.FC = () => {
       </Card>
       
       {/* 历史净值走势图表 */}
-      <Card className="chart-card" title="历史净值走势" size="small" loading={loading}>
-        <div ref={chartRef} className="growth-chart" />
+      <Card className={styles['chart-card']} title="历史净值走势" size="small" loading={loading}>
+        <div ref={chartRef} className={styles['growth-chart']} />
       </Card>
       
       {/* 基金经理信息 */}
-      <Card className="manager-card" title="基金经理信息" size="small" loading={loading}>
+      <Card className={styles['manager-card']} title="基金经理信息" size="small" loading={loading}>
         <Row gutter={16} align="middle">
           <Col xs={6} sm={4}>
-            <div className="manager-avatar">
+            <div className={styles['manager-avatar']}>
               <FundOutlined style={{ fontSize: 48, color: '#1890ff' }} />
             </div>
           </Col>

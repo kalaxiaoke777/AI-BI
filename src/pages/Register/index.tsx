@@ -4,7 +4,7 @@ import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { registerRequest } from '../../redux/actions/userActions';
-import './index.scss';
+import styles from './index.module.scss';
 
 const { Title } = Typography;
 
@@ -35,12 +35,12 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="register-container">
-      <div className="register-image-section">
-        <img src="/image.png" alt="基金理财平台" className="register-image" />
+    <div className={styles.registerContainer}>
+      <div className={styles.registerImageSection}>
+        <img src="/image.png" alt="基金理财平台" className={styles.registerImage} />
       </div>
-      <div className="register-form-section">
-        <Card className="register-card" title={<Title level={2} className="register-title">基金理财平台</Title>}>
+      <div className={styles.registerFormSection}>
+        <Card className={styles.registerCard} title={<Title level={2} className={styles.registerTitle}>基金理财平台</Title>}>
           <Form
             name="register-form"
             initialValues={{ remember: true }}
@@ -53,7 +53,7 @@ const Register: React.FC = () => {
               label="用户名"
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={<UserOutlined className={styles.siteFormItemIcon} />}
                 placeholder="请输入用户名"
                 size="large"
               />
@@ -65,7 +65,7 @@ const Register: React.FC = () => {
               label="邮箱"
             >
               <Input
-                prefix={<MailOutlined className="site-form-item-icon" />}
+                prefix={<MailOutlined className={styles.siteFormItemIcon} />}
                 placeholder="请输入邮箱"
                 size="large"
               />
@@ -77,7 +77,7 @@ const Register: React.FC = () => {
               label="密码"
             >
               <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={<LockOutlined className={styles.siteFormItemIcon} />}
                 type="password"
                 placeholder="请输入密码"
                 size="large"
@@ -101,7 +101,7 @@ const Register: React.FC = () => {
               label="确认密码"
             >
               <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={<LockOutlined className={styles.siteFormItemIcon} />}
                 type="password"
                 placeholder="请确认密码"
                 size="large"
@@ -109,12 +109,12 @@ const Register: React.FC = () => {
             </Form.Item>
 
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="register-button" size="large" loading={loading}>
+              <Button type="primary" htmlType="submit" className={styles.registerButton} size="large" loading={loading}>
                 注册
               </Button>
             </Form.Item>
 
-            <Form.Item className="register-footer">
+            <Form.Item className={styles.registerFooter}>
               <Space orientation="vertical" size="small" style={{ display: 'flex' }}>
                 <span>已有账号？ <Link to="/login">立即登录</Link></span>
               </Space>

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Button, Avatar, Dropdown } from 'antd';
 import { UserOutlined, FundOutlined, BarChartOutlined, StarOutlined, WalletOutlined, HistoryOutlined, LineChartOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import './index.scss';
+import { useAppSelector, useAppDispatch } from '../../hooks/useRedux';
+import { logout } from '../../redux/actions/userActions';
+import styles from './index.module.scss';
 
 const { Header: AntHeader } = Layout;
 
@@ -10,12 +12,10 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [current, setCurrent] = useState('funds');
-
-  // 模拟用户信息
-  const userInfo = {
-    username: '用户123',
-    avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-  };
+  const dispatch = useAppDispatch();
+  
+  // 从Redux获取用户信息
+  const { userInfo, isAuthenticated } = useAppSelector(state => state.user);
 
   // 根据当前路由设置菜单选中状态
   useEffect(() => {
@@ -45,8 +45,8 @@ const Header: React.FC = () => {
 
   // 处理退出登录
   const handleLogout = () => {
-    // 清除token
-    localStorage.removeItem('token');
+    // 调用Redux退出登录action
+    dispatch(logout());
     // 重定向到登录页
     navigate('/login');
   };
@@ -96,12 +96,50 @@ const Header: React.FC = () => {
     />
   );
 
+  // 构建导航菜单，根据用户角色显示或隐藏用户管理菜单
+  const navItems = [
+    {
+      key: 'index',
+      icon: <LineChartOutlined />,
+      label: <Link to="/index">指数分析</Link>,
+    },
+    {
+      key: 'funds',
+      icon: <FundOutlined />,
+      label: <Link to="/funds">基金列表</Link>,
+    },
+    {
+      key: 'companies',
+      icon: <FundOutlined />,
+      label: <Link to="/companies">基金公司</Link>,
+    },
+    {
+      key: 'query',
+      icon: <BarChartOutlined />,
+      label: <Link to="/query">基金查询</Link>,
+    },
+    {
+      key: 'rank',
+      icon: <BarChartOutlined />,
+      label: <Link to="/rank">基金排行</Link>,
+    },
+  ];
+  
+  // 只有admin角色才显示用户管理菜单
+  if (userInfo?.role === 'admin') {
+    navItems.push({
+      key: 'users',
+      icon: <UserOutlined />,
+      label: <Link to="/users">用户管理</Link>,
+    });
+  }
+  
   return (
-    <AntHeader className="header">
-      <div className="logo">
+    <AntHeader className={styles.header}>
+      <div className={styles.logo}>
         <Link to="/">
-          <FundOutlined className="logo-icon" /> 
-          <span className="logo-text">基金理财</span>
+          <FundOutlined className={styles.logoIcon} /> 
+          <span className={styles.logoText}>基金理财</span>
         </Link>
       </div>
       
@@ -110,50 +148,29 @@ const Header: React.FC = () => {
         mode="horizontal"
         selectedKeys={[current]}
         onClick={handleMenuClick}
-        className="nav-menu"
-        items={[
-          {
-            key: 'index',
-            icon: <LineChartOutlined />,
-            label: <Link to="/index">指数分析</Link>,
-          },
-          {
-            key: 'funds',
-            icon: <FundOutlined />,
-            label: <Link to="/funds">基金列表</Link>,
-          },
-          {
-            key: 'companies',
-            icon: <FundOutlined />,
-            label: <Link to="/companies">基金公司</Link>,
-          },
-          {
-            key: 'query',
-            icon: <BarChartOutlined />,
-            label: <Link to="/query">基金查询</Link>,
-          },
-          {
-            key: 'rank',
-            icon: <BarChartOutlined />,
-            label: <Link to="/rank">基金排行</Link>,
-          },
-          {
-            key: 'users',
-            icon: <UserOutlined />,
-            label: <Link to="/users">用户管理</Link>,
-          },
-
-        ]}
+        className={styles.navMenu}
+        items={navItems}
       />
       
-      <div className="user-info">
-        <Dropdown menu={{ items: userMenu?.props?.items }} trigger={['click']}>
-          <Button type="text" className="user-button">
-            <Avatar src={userInfo.avatar} icon={<UserOutlined />} />
-            <span className="username">{userInfo.username}</span>
+      {isAuthenticated && userInfo && (
+        <div className={styles.userInfo}>
+          <Dropdown menu={{ items: userMenu?.props?.items }} trigger={['click']}>
+            <Button type="text" className={styles.userButton}>
+              <Avatar icon={<UserOutlined />} />
+              <span className={styles.username}>{userInfo.username}</span>
+            </Button>
+          </Dropdown>
+        </div>
+      )}
+      
+      {!isAuthenticated && (
+        <div className={styles['login-button']}>
+          <Button type="text" onClick={() => navigate('/login')} className={styles['nav-login-button']}>
+            <UserOutlined />
+            <span>登录</span>
           </Button>
-        </Dropdown>
-      </div>
+        </div>
+      )}
     </AntHeader>
   );
 };

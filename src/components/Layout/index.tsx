@@ -2,17 +2,17 @@ import React from 'react';
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import Header from '../Header';
-import './index.scss';
+import styles from './index.module.scss';
 
 const { Content } = Layout;
 
 const MainLayout: React.FC = () => {
   return (
-    <Layout className="main-layout">
+    <Layout className={styles.mainLayout}>
       <Header />
       
-      <Content className="content">
-        <div className="main-content">
+      <Content className={styles.content}>
+        <div className={styles.mainContent}>
           <Outlet />
         </div>
       </Content>

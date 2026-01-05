@@ -3,7 +3,7 @@ import { Card, Table, Button, Space, Typography, Modal, Form, Input, message } f
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { getUsersRequest, deleteUserRequest, updateUserRequest } from '../../redux/actions/userActions';
-import './index.scss';
+import styles from './index.module.scss';
 
 const { Title } = Typography;
 
@@ -42,11 +42,11 @@ const UserManagement: React.FC = () => {
   };
 
   return (
-    <div className="user-management-container">
-      <Card className="user-management-card">
-        <div className="user-management-header">
+    <div className={styles.userManagementContainer}>
+      <Card className={styles.userManagementCard}>
+        <div className={styles.userManagementHeader}>
           <Title level={2}>用户管理</Title>
-          <div className="user-management-actions">
+          <div className={styles.userManagementActions}>
             <Button type="primary" icon={<PlusOutlined />} onClick={() => {
               setEditingUser(null);
               form.resetFields();

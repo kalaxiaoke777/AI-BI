@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import * as echarts from 'echarts';
-import './index.scss';
+import styles from './index.module.scss';
 import { Card, Spin, Typography } from 'antd';
 import api from '../../services/api';
 
@@ -191,21 +191,21 @@ const IndexAnalysis: React.FC = () => {
   }, [selectedIndex, fetchIndexData]);
 
   return (
-    <div className="index-analysis-container">
+    <div className={styles['index-analysis-container']}>
       {/* 左侧指数列表 */}
-      <div className="index-list">
-        <div className="index-list-header">
+      <div className={styles['index-list']}>
+        <div className={styles['index-list-header']}>
           <h2>指数列表</h2>
         </div>
-        <div className="index-list-body">
+        <div className={styles['index-list-body']}>
           {indexTypes.map(type => (
             <div
               key={type.value}
-              className={`index-item ${selectedIndex === type.value ? 'active' : ''}`}
+              className={`${styles['index-item']} ${selectedIndex === type.value ? styles['active'] : ''}`}
               onClick={() => setSelectedIndex(type.value)}
             >
-              <div className="index-name">{type.label}</div>
-              <div className="index-desc">
+              <div className={styles['index-name']}>{type.label}</div>
+              <div className={styles['index-desc']}>
                 {type.value === '沪深300' && '反映沪深市场整体走势'}
                 {type.value === '中证500' && '反映中小市值公司表现'}
                 {type.value === '中证1000' && '反映小盘股市场表现'}
@@ -218,40 +218,40 @@ const IndexAnalysis: React.FC = () => {
       </div>
 
       {/* 右侧内容区域 */}
-      <div className="index-content">
-        <div className="index-content-header">
+      <div className={styles['index-content']}>
+        <div className={styles['index-content-header']}>
           <Title level={2}>{selectedIndex} 指数分析</Title>
         </div>
         
-        <div className="index-content-body">
-          <Card className="chart-card">
+        <div className={styles['index-content-body']}>
+          <Card className={styles['chart-card']}>
             <Spin spinning={loading} tip="加载数据中...">
               <div 
                 ref={chartRef} 
-                className="index-chart"
+                className={styles['index-chart']}
               />
             </Spin>
           </Card>
           
           {!loading && indexData.length > 0 && (
-            <Card className="data-card">
+            <Card className={styles['data-card']}>
               <Title level={4}>最新数据</Title>
-              <div className="data-grid">
-                <div className="data-item">
+              <div className={styles['data-grid']}>
+                <div className={styles['data-item']}>
                   <Text strong>最新价:</Text>
-                  <Text className="data-value">{indexData[indexData.length - 1].close.toFixed(2)}</Text>
+                  <Text className={styles['data-value']}>{indexData[indexData.length - 1].close.toFixed(2)}</Text>
                 </div>
-                <div className="data-item">
+                <div className={styles['data-item']}>
                   <Text strong>最高价:</Text>
-                  <Text className="data-value">{Math.max(...indexData.map(item => item.high)).toFixed(2)}</Text>
+                  <Text className={styles['data-value']}>{Math.max(...indexData.map(item => item.high)).toFixed(2)}</Text>
                 </div>
-                <div className="data-item">
+                <div className={styles['data-item']}>
                   <Text strong>最低价:</Text>
-                  <Text className="data-value">{Math.min(...indexData.map(item => item.low)).toFixed(2)}</Text>
+                  <Text className={styles['data-value']}>{Math.min(...indexData.map(item => item.low)).toFixed(2)}</Text>
                 </div>
-                <div className="data-item">
+                <div className={styles['data-item']}>
                   <Text strong>成交量:</Text>
-                  <Text className="data-value">{indexData[indexData.length - 1].volume.toLocaleString()}</Text>
+                  <Text className={styles['data-value']}>{indexData[indexData.length - 1].volume.toLocaleString()}</Text>
                 </div>
               </div>
             </Card>
