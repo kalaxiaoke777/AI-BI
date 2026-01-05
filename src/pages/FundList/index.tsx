@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState,useMemo } from 'react';
 import { Table, Input, Select, Button, Space, Typography, Card, Row, Col } from 'antd';
-import { SearchOutlined, FundOutlined, LineChartOutlined } from '@ant-design/icons';
+import {  FundOutlined, LineChartOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchFundsRequest } from '../../redux/actions/fundActions';
@@ -8,12 +8,11 @@ import type { FundBasic, FundFilters } from '../../types/fund';
 import styles from './index.module.scss';
 
 const { Title } = Typography;
-const { Search } = Input;
 const { Option } = Select;
 
 // 防抖函数
 const debounce = <T extends (...args: any[]) => any>(func: T, delay: number) => {
-  let timeoutId: NodeJS.Timeout;
+  let timeoutId: ReturnType<typeof setTimeout>;
   return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => func(...args), delay);
@@ -56,21 +55,21 @@ const FundList: React.FC = () => {
   }, []);
 
   // 搜索基金（用于直接调用，无防抖）
-  const handleSearch = (values: any) => {
-    const params: FundFilters = {
-      ...searchParams,
-      ...values,
-      page: 1,
-      // 保留当前排序条件（如果有的话）
-      ...(filters.sort_by && { sort_by: filters.sort_by }),
-      ...(filters.sort_order && { sort_order: filters.sort_order }),
-    };
-    setSearchParams(params);
-    dispatch(fetchFundsRequest(params));
-  };
+  // const handleSearch = (values: any) => {
+  //   const params: FundFilters = {
+  //     ...searchParams,
+  //     ...values,
+  //     page: 1,
+  //     // 保留当前排序条件（如果有的话）
+  //     ...(filters.sort_by && { sort_by: filters.sort_by }),
+  //     ...(filters.sort_order && { sort_order: filters.sort_order }),
+  //   };
+  //   setSearchParams(params);
+  //   dispatch(fetchFundsRequest(params));
+  // };
 
   // 统一处理表格变化（排序、分页、筛选）
-  const handleTableChange = (pagination: any, filters: any, sorter: any) => {
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
     // 构建新的搜索参数
     let newParams: FundFilters = {
       ...searchParams,

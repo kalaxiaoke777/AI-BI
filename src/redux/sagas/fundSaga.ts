@@ -24,7 +24,7 @@ import {
 // 获取基金列表saga
 export function* fetchFundsSaga(action: any) {
   try {
-    const response = yield call(api.get, '/query/fund/basic', { params: action.payload });
+    const response: unknown = yield call(api.get, '/query/fund/basic', { params: action.payload });
     yield put({ type: FETCH_FUNDS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUNDS_FAILURE, payload: error.message || '获取基金列表失败' });
@@ -34,7 +34,7 @@ export function* fetchFundsSaga(action: any) {
 // 获取基金详情saga
 export function* fetchFundDetailSaga(action: any) {
   try {
-    const response = yield call(api.get, `/query/fund/basic/${action.payload}`);
+    const response: unknown = yield call(api.get, `/query/fund/basic/${action.payload}`);
     yield put({ type: FETCH_FUND_DETAIL_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_DETAIL_FAILURE, payload: error.message || '获取基金详情失败' });
@@ -44,7 +44,7 @@ export function* fetchFundDetailSaga(action: any) {
 // 获取基金历史涨幅saga
 export function* fetchFundGrowthSaga(action: any) {
   try {
-    const response = yield call(api.get, `/fund/${action.payload}/growth`);
+    const response: unknown = yield call(api.get, `/fund/${action.payload}/growth`);
     yield put({ type: FETCH_FUND_GROWTH_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_GROWTH_FAILURE, payload: error.message || '获取基金历史涨幅失败' });
@@ -54,8 +54,8 @@ export function* fetchFundGrowthSaga(action: any) {
 // 获取基金公司列表saga
 export function* fetchFundCompaniesSaga() {
   try {
-    const response = yield call(api.get, '/query/fund/company');
-    yield put({ type: FETCH_FUND_COMPANIES_SUCCESS, payload: response.data });
+    const response: unknown = yield call(api.get, '/query/fund/company');
+    yield put({ type: FETCH_FUND_COMPANIES_SUCCESS, payload: (response as { data: any }).data });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_COMPANIES_FAILURE, payload: error.message || '获取基金公司列表失败' });
   }
@@ -64,7 +64,7 @@ export function* fetchFundCompaniesSaga() {
 // 获取基金公司详情saga
 export function* fetchFundCompanyDetailSaga(action: any) {
   try {
-    const response = yield call(api.get, `/query/fund/company/${action.payload}`);
+    const response: unknown = yield call(api.get, `/query/fund/company/${action.payload}`);
     yield put({ type: FETCH_FUND_COMPANY_DETAIL_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_COMPANY_DETAIL_FAILURE, payload: error.message || '获取基金公司详情失败' });
@@ -74,8 +74,8 @@ export function* fetchFundCompanyDetailSaga(action: any) {
 // 获取基金公司发行的基金列表saga
 export function* fetchCompanyFundsSaga(action: any) {
   try {
-    const response = yield call(api.get, `/fund/companies/${action.payload}/funds`);
-    yield put({ type: FETCH_COMPANY_FUNDS_SUCCESS, payload: response.data });
+    const response: unknown = yield call(api.get, `/fund/companies/${action.payload}/funds`);
+    yield put({ type: FETCH_COMPANY_FUNDS_SUCCESS, payload: (response as { data: any }).data });
   } catch (error: any) {
     yield put({ type: FETCH_COMPANY_FUNDS_FAILURE, payload: error.message || '获取基金公司发行的基金列表失败' });
   }

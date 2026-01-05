@@ -29,10 +29,10 @@ import type { LoginRequest, RegisterRequest } from '../../types/user';
 export function* loginSaga(action: any) {
   try {
     const { payload }: { payload: LoginRequest } = action;
-    const response = yield call(api.post, '/user/login', payload);
+    const response: unknown = yield call(api.post, '/user/login', payload);
     yield put({ type: LOGIN_SUCCESS, payload: response });
     // 将token存储到localStorage
-    localStorage.setItem('token', response.access_token);
+    localStorage.setItem('token', (response as { access_token: string }).access_token);
   } catch (error: any) {
     yield put({ type: LOGIN_FAILURE, payload: error.response.data.detail || '登录失败' });
   }
@@ -42,7 +42,7 @@ export function* loginSaga(action: any) {
 export function* registerSaga(action: any) {
   try {
     const { payload }: { payload: RegisterRequest } = action;
-    const response = yield call(api.post, '/user/register', payload);
+    const response: unknown = yield call(api.post, '/user/register', payload);
     yield put({ type: REGISTER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: REGISTER_FAILURE, payload: error.response.data.detail || '注册失败' });
@@ -52,7 +52,7 @@ export function* registerSaga(action: any) {
 // 获取当前用户信息saga
 export function* getCurrentUserSaga() {
   try {
-    const response = yield call(api.get, '/user/me');
+    const response: unknown = yield call(api.get, '/user/me');
     yield put({ type: GET_CURRENT_USER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: GET_CURRENT_USER_FAILURE, payload: error.response.data.detail || '获取用户信息失败' });
@@ -62,7 +62,7 @@ export function* getCurrentUserSaga() {
 // 获取用户列表saga
 export function* getUsersSaga() {
   try {
-    const response = yield call(api.get, '/user/users');
+    const response: unknown = yield call(api.get, '/user/users');
     yield put({ type: GET_USERS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: GET_USERS_FAILURE, payload: error.response.data.detail || '获取用户列表失败' });
@@ -73,7 +73,7 @@ export function* getUsersSaga() {
 export function* getUserSaga(action: any) {
   try {
     const { payload }: { payload: number } = action;
-    const response = yield call(api.get, `/user/users/${payload}`);
+    const response: unknown = yield call(api.get, `/user/users/${payload}`);
     yield put({ type: GET_USER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: GET_USER_FAILURE, payload: error.response.data.detail || '获取用户失败' });
@@ -85,7 +85,7 @@ export function* updateUserSaga(action: any) {
   try {
     const { payload } = action;
     const { id, ...userData } = payload;
-    const response = yield call(api.put, `/user/users/${id}`, userData);
+    const response: unknown = yield call(api.put, `/user/users/${id}`, userData);
     yield put({ type: UPDATE_USER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: UPDATE_USER_FAILURE, payload: error.response.data.detail || '更新用户失败' });

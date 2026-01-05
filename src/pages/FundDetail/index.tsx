@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Card, Typography, Row, Col, Statistic, Descriptions, Button, Space } from 'antd';
-import { ArrowLeftOutlined, FundOutlined, LineChartOutlined, StarOutlined, WalletOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, FundOutlined, StarOutlined, WalletOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchFundDetailRequest, fetchFundGrowthRequest } from '../../redux/actions/fundActions';
