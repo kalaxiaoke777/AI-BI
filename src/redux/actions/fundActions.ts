@@ -1,4 +1,4 @@
-import type { FundFilters } from '../../types/fund';
+import type { FundFilters, FundCombinedParams } from '../../types/fund';
 
 // Action Types
 export const FETCH_FUNDS_REQUEST = 'FETCH_FUNDS_REQUEST';
@@ -44,7 +44,7 @@ export const fetchFundsFailure = (error: string) => ({
 });
 
 // 获取基金详情
-export const fetchFundDetailRequest = (payload: number) => ({
+export const fetchFundDetailRequest = (payload: FundCombinedParams) => ({
   type: FETCH_FUND_DETAIL_REQUEST,
   payload,
 });
@@ -121,3 +121,4 @@ export const fetchCompanyFundsFailure = (error: string) => ({
   type: FETCH_COMPANY_FUNDS_FAILURE,
   payload: error,
 });
+

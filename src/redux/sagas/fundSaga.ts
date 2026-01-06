@@ -33,8 +33,8 @@ export function* fetchFundsSaga(action: any) {
 
 // 获取基金详情saga
 export function* fetchFundDetailSaga(action: any) {
-  try {
-    const response: unknown = yield call(api.get, `/query/fund/basic/${action.payload}`);
+  try {    
+    const response: unknown = yield call(api.get, `/query/fund/combined`, { params: action.payload });
     yield put({ type: FETCH_FUND_DETAIL_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_DETAIL_FAILURE, payload: error.message || '获取基金详情失败' });

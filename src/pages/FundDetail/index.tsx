@@ -3,8 +3,9 @@ import { Card, Typography, Row, Col, Statistic, Descriptions, Button, Space } fr
 import { ArrowLeftOutlined, FundOutlined, StarOutlined, WalletOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
-import { fetchFundDetailRequest, fetchFundGrowthRequest } from '../../redux/actions/fundActions';
+import { fetchFundDetailRequest } from '../../redux/actions/fundActions';
 import * as echarts from 'echarts';
+import type { FundCombinedParams } from '../../types/fund';
 import styles from './index.module.scss';
 
 const { Title, Text } = Typography;
@@ -29,8 +30,13 @@ const FundDetail: React.FC = () => {
 
   useEffect(() => {
     if (fundId) {
-      dispatch(fetchFundDetailRequest(Number(fundId)));
-      dispatch(fetchFundGrowthRequest(Number(fundId)));
+
+      const params: FundCombinedParams = {
+        fund_id: String(fundId),
+        page: 1,
+      };  
+      dispatch(fetchFundDetailRequest(params));
+      // dispatch(fetchFundGrowthRequest(Number(fundId)));
     }
   }, [fundId]);
 
@@ -154,6 +160,19 @@ const FundDetail: React.FC = () => {
     }
   }, [chart, growth]);
 
+  // 格式化增长率显示，添加颜色和符号
+  const formatGrowth = (value: number | null) => {
+    if (value === null) return '-';
+    const isPositive = value > 0;
+    const growthClass = isPositive ? styles['growth-positive'] : value < 0 ? styles['growth-negative'] : '';
+    const prefix = isPositive ? '+' : '';
+    return (
+      <span className={`${styles['growth-value']} ${growthClass}`}>
+        {prefix}{value.toFixed(2)}%
+      </span>
+    );
+  };
+
   // 返回基金列表
   const handleBack = () => {
     navigate('/funds');
@@ -188,7 +207,7 @@ const FundDetail: React.FC = () => {
       
       <Title level={2} className={styles['page-title']}>
         <FundOutlined className={styles['title-icon']} />
-        {detail.fund_name}
+        {detail.data[0].fund.fund_name}
       </Title>
       
       {/* 基金基本信息卡片 */}
@@ -197,21 +216,21 @@ const FundDetail: React.FC = () => {
           <Col xs={24} sm={12} md={6}>
             <Statistic 
               title="基金代码" 
-              value={detail.fund_code} 
+              value={detail.data[0].fund.fund_code} 
               valueStyle={{ fontSize: 20, fontWeight: 'bold' }}
             />
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Statistic 
               title="基金类型" 
-              value={fundTypeMap[detail.fund_type] || '未知'}
+              value={fundTypeMap[detail.data[0].fund.fund_type] || '未知'}
               valueStyle={{ fontSize: 20 }}
             />
           </Col>
           <Col xs={24} sm={12} md={6}>
             <Statistic 
               title="最新净值" 
-              value={detail.latest_nav} 
+              value={detail.data[0].fund.latest_nav} 
               precision={4}
               valueStyle={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}
             />
@@ -219,25 +238,25 @@ const FundDetail: React.FC = () => {
           <Col xs={24} sm={12} md={6}>
             <Statistic 
               title="成立日期" 
-              value={new Date(detail.launch_date).toLocaleDateString()}
+              value={new Date(detail.data[0].fund.launch_date).toLocaleDateString()}
               valueStyle={{ fontSize: 20 }}
             />
           </Col>
         </Row>
         
         <Descriptions column={2} bordered style={{ marginTop: 20 }}>
-          <Descriptions.Item label="基金简称">{detail.short_name}</Descriptions.Item>
-          <Descriptions.Item label="基金经理">{detail.manager}</Descriptions.Item>
-          <Descriptions.Item label="基金公司">{detail.company_name}</Descriptions.Item>
+          <Descriptions.Item label="基金简称">{detail.data[0].fund.short_name}</Descriptions.Item>
+          <Descriptions.Item label="基金经理">{detail.data[0].fund.manager}</Descriptions.Item>
+          <Descriptions.Item label="基金公司">{detail.data[0].fund.company_name}</Descriptions.Item>
           <Descriptions.Item label="风险等级">
-            {Array.from({ length: Math.floor(detail.risk_level) }).map((_, i) => (
+            {Array.from({ length: Math.floor(detail.data[0].fund.risk_level) }).map((_, i) => (
               <span key={i} style={{ color: '#fadb14', marginRight: '2px', fontSize: '18px' }}>★</span>
             ))}
           </Descriptions.Item>
-          <Descriptions.Item label="申购起点" span={2}>{detail.purchase_min_amount} 元</Descriptions.Item>
-          <Descriptions.Item label="赎回起点" span={2}>{detail.redemption_min_amount} 元</Descriptions.Item>
+          <Descriptions.Item label="申购起点" span={2}>{detail.data[0].fund.purchase_min_amount} 元</Descriptions.Item>
+          <Descriptions.Item label="赎回起点" span={2}>{detail.data[0].fund.redemption_min_amount} 元</Descriptions.Item>
           <Descriptions.Item label="是否可申购" span={2}>
-            {detail.is_purchaseable ? (
+            {detail.data[0].fund.is_purchaseable ? (
               <Text type="success">是</Text>
             ) : (
               <Text type="danger">否</Text>
@@ -260,34 +279,163 @@ const FundDetail: React.FC = () => {
             icon={<WalletOutlined />} 
             onClick={handlePurchase}
             size="large"
-            disabled={!detail.is_purchaseable}
+            disabled={!detail.data[0].fund.is_purchaseable}
           >
             立即购买
           </Button>
         </Space>
       </Card>
       
-      {/* 历史净值走势图表 */}
-      <Card className={styles['chart-card']} title="历史净值走势" size="small" loading={loading}>
-        <div ref={chartRef} className={styles['growth-chart']} />
-      </Card>
-      
-      {/* 基金经理信息 */}
-      <Card className={styles['manager-card']} title="基金经理信息" size="small" loading={loading}>
-        <Row gutter={16} align="middle">
-          <Col xs={6} sm={4}>
-            <div className={styles['manager-avatar']}>
-              <FundOutlined style={{ fontSize: 48, color: '#1890ff' }} />
-            </div>
+      {/* 基金排名信息卡片 */}
+      <Card className={styles['ranking-card']} title="基金排名与收益" size="small" loading={loading}>
+        <Row gutter={16}>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="日增长率" 
+              value={detail.data[0].rank.daily_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 28, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.daily_growth > 0 ? '#ff4d4f' : detail.data[0].rank.daily_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
           </Col>
-          <Col xs={18} sm={20}>
-            <div>
-              <h3 style={{ marginBottom: 8 }}>{detail.manager}</h3>
-              <p style={{ margin: 0, color: '#666' }}>基金经理简介：</p>
-              <p style={{ margin: '8px 0', color: '#999' }}>暂无详细信息</p>
-            </div>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="周增长率" 
+              value={detail.data[0].rank.weekly_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 28, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.weekly_growth > 0 ? '#ff4d4f' : detail.data[0].rank.weekly_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="月增长率" 
+              value={detail.data[0].rank.monthly_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 28, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.monthly_growth > 0 ? '#ff4d4f' : detail.data[0].rank.monthly_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="年增长率" 
+              value={detail.data[0].rank.yearly_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 28, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.yearly_growth > 0 ? '#ff4d4f' : detail.data[0].rank.yearly_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="季度增长率" 
+              value={detail.data[0].rank.quarterly_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 18, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.quarterly_growth > 0 ? '#ff4d4f' : detail.data[0].rank.quarterly_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="两年增长率" 
+              value={detail.data[0].rank.two_year_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 18, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.two_year_growth > 0 ? '#ff4d4f' : detail.data[0].rank.two_year_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="三年增长率" 
+              value={detail.data[0].rank.three_year_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 18, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.three_year_growth > 0 ? '#ff4d4f' : detail.data[0].rank.three_year_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Statistic 
+              title="五年增长率" 
+              value={detail.data[0].rank.five_year_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 18, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.five_year_growth > 0 ? '#ff4d4f' : detail.data[0].rank.five_year_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={24} md={6}>
+            <Statistic 
+              title="成立以来" 
+              value={detail.data[0].rank.since_launch_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 28, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.since_launch_growth > 0 ? '#ff4d4f' : detail.data[0].rank.since_launch_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
+          </Col>
+          <Col xs={24} sm={24} md={6}>
+            <Statistic 
+              title="今年涨幅" 
+              value={detail.data[0].rank.ytd_growth} 
+              precision={2}
+              suffix="%"
+              valueStyle={{ 
+                fontSize: 28, 
+                fontWeight: 'bold', 
+                color: detail.data[0].rank.ytd_growth > 0 ? '#ff4d4f' : detail.data[0].rank.ytd_growth < 0 ? '#52c41a' : '#666' 
+              }}
+            />
           </Col>
         </Row>
+      </Card>
+      
+      {/* 历史净值走势图表 */}
+      {/* <Card className={styles['chart-card']} title="历史净值走势" size="small" loading={loading}>
+        <div ref={chartRef} className={styles['growth-chart']} />
+      </Card> */}
+      
+      {/* 基金公司信息 */}
+      <Card className={styles['company-card']} title="基金公司信息" size="small" loading={loading}>
+        <Descriptions column={2} bordered>
+          <Descriptions.Item label="公司名称">{detail.data[0].company.company_name || detail.data[0].company.company_name}</Descriptions.Item>
+          <Descriptions.Item label="公司简称">{detail.data[0].company.short_name || '-'}</Descriptions.Item>
+          <Descriptions.Item label="成立日期">
+            {detail.data[0].company.establish_date ? new Date(detail.data[0].company.establish_date).toLocaleDateString() : '-'}
+          </Descriptions.Item>
+        </Descriptions>
       </Card>
     </div>
   );
