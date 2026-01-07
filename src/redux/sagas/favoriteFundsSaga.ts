@@ -1,5 +1,5 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
-import api from '../../services/api';
+import { favoriteService } from '../../services';
 import {
   FETCH_FAVORITE_FUNDS_REQUEST,
   FETCH_FAVORITE_FUNDS_SUCCESS,
@@ -15,7 +15,7 @@ import {
 // 获取自选基金列表saga
 export function* fetchFavoriteFundsSaga() {
   try {
-    const response: unknown = yield call(api.get, '/ss-fund/favorite-funds');
+    const response: unknown = yield call(favoriteService.getFavoriteFunds);
     yield put({ type: FETCH_FAVORITE_FUNDS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FAVORITE_FUNDS_FAILURE, payload: error.message || '获取自选基金列表失败' });
@@ -25,7 +25,8 @@ export function* fetchFavoriteFundsSaga() {
 // 添加自选基金saga
 export function* addFavoriteFundSaga(action: any) {
   try {
-    const response: unknown = yield call(api.post, '/ss-fund/favorite-funds', action.payload);
+    const { fund_code } = action.payload;
+    const response: unknown = yield call(favoriteService.addToFavorites, fund_code);
     yield put({ type: ADD_FAVORITE_FUND_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: ADD_FAVORITE_FUND_FAILURE, payload: error.message || '添加自选基金失败' });
@@ -35,8 +36,9 @@ export function* addFavoriteFundSaga(action: any) {
 // 删除自选基金saga
 export function* removeFavoriteFundSaga(action: any) {
   try {
-    yield call(api.delete, `/ss-fund/favorite-funds/${action.payload}`);
-    yield put({ type: REMOVE_FAVORITE_FUND_SUCCESS, payload: action.payload });
+    const { fund_code } = action.payload;
+    yield call(favoriteService.removeFromFavorites, fund_code);
+    yield put({ type: REMOVE_FAVORITE_FUND_SUCCESS, payload: { fund_code } });
   } catch (error: any) {
     yield put({ type: REMOVE_FAVORITE_FUND_FAILURE, payload: error.message || '删除自选基金失败' });
   }

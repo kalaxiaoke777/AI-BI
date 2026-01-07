@@ -1,5 +1,5 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
-import api from '../../services/api';
+import { fundService } from '../../services';
 import {
   FETCH_FUNDS_REQUEST,
   FETCH_FUNDS_SUCCESS,
@@ -24,7 +24,7 @@ import {
 // 获取基金列表saga
 export function* fetchFundsSaga(action: any) {
   try {
-    const response: unknown = yield call(api.get, '/query/fund/basic', { params: action.payload });
+    const response: unknown = yield call(fundService.getFundList, action.payload);
     yield put({ type: FETCH_FUNDS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUNDS_FAILURE, payload: error.message || '获取基金列表失败' });
@@ -33,8 +33,8 @@ export function* fetchFundsSaga(action: any) {
 
 // 获取基金详情saga
 export function* fetchFundDetailSaga(action: any) {
-  try {    
-    const response: unknown = yield call(api.get, `/query/fund/combined`, { params: action.payload });
+  try {
+    const response: unknown = yield call(fundService.getFundDetail, action.payload);
     yield put({ type: FETCH_FUND_DETAIL_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_DETAIL_FAILURE, payload: error.message || '获取基金详情失败' });
@@ -44,7 +44,7 @@ export function* fetchFundDetailSaga(action: any) {
 // 获取基金历史涨幅saga
 export function* fetchFundGrowthSaga(action: any) {
   try {
-    const response: unknown = yield call(api.get, `/fund/${action.payload}/growth`);
+    const response: unknown = yield call(fundService.getFundGrowth, action.payload);
     yield put({ type: FETCH_FUND_GROWTH_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_GROWTH_FAILURE, payload: error.message || '获取基金历史涨幅失败' });
@@ -54,7 +54,7 @@ export function* fetchFundGrowthSaga(action: any) {
 // 获取基金公司列表saga
 export function* fetchFundCompaniesSaga() {
   try {
-    const response: unknown = yield call(api.get, '/query/fund/company');
+    const response: unknown = yield call(fundService.getFundCompanies);
     yield put({ type: FETCH_FUND_COMPANIES_SUCCESS, payload: (response as { data: any }).data });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_COMPANIES_FAILURE, payload: error.message || '获取基金公司列表失败' });
@@ -64,7 +64,7 @@ export function* fetchFundCompaniesSaga() {
 // 获取基金公司详情saga
 export function* fetchFundCompanyDetailSaga(action: any) {
   try {
-    const response: unknown = yield call(api.get, `/query/fund/company/${action.payload}`);
+    const response: unknown = yield call(fundService.getFundCompanyDetail, action.payload);
     yield put({ type: FETCH_FUND_COMPANY_DETAIL_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_FUND_COMPANY_DETAIL_FAILURE, payload: error.message || '获取基金公司详情失败' });
@@ -74,7 +74,7 @@ export function* fetchFundCompanyDetailSaga(action: any) {
 // 获取基金公司发行的基金列表saga
 export function* fetchCompanyFundsSaga(action: any) {
   try {
-    const response: unknown = yield call(api.get, `/fund/companies/${action.payload}/funds`);
+    const response: unknown = yield call(fundService.getCompanyFunds, action.payload);
     yield put({ type: FETCH_COMPANY_FUNDS_SUCCESS, payload: (response as { data: any }).data });
   } catch (error: any) {
     yield put({ type: FETCH_COMPANY_FUNDS_FAILURE, payload: error.message || '获取基金公司发行的基金列表失败' });

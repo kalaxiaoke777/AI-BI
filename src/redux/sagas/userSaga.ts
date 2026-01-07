@@ -1,5 +1,5 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
-import api from '../../services/api';
+import { userService } from '../../services';
 import {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -29,7 +29,7 @@ import type { LoginRequest, RegisterRequest } from '../../types/user';
 export function* loginSaga(action: any) {
   try {
     const { payload }: { payload: LoginRequest } = action;
-    const response: unknown = yield call(api.post, '/user/login', payload);
+    const response: unknown = yield call(userService.login, payload);
     yield put({ type: LOGIN_SUCCESS, payload: response });
     // 将token存储到localStorage
     localStorage.setItem('token', (response as { access_token: string }).access_token);
@@ -42,7 +42,7 @@ export function* loginSaga(action: any) {
 export function* registerSaga(action: any) {
   try {
     const { payload }: { payload: RegisterRequest } = action;
-    const response: unknown = yield call(api.post, '/user/register', payload);
+    const response: unknown = yield call(userService.register, payload);
     yield put({ type: REGISTER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: REGISTER_FAILURE, payload: error.response.data.detail || '注册失败' });
@@ -52,7 +52,7 @@ export function* registerSaga(action: any) {
 // 获取当前用户信息saga
 export function* getCurrentUserSaga() {
   try {
-    const response: unknown = yield call(api.get, '/user/me');
+    const response: unknown = yield call(userService.getCurrentUser);
     yield put({ type: GET_CURRENT_USER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: GET_CURRENT_USER_FAILURE, payload: error.response.data.detail || '获取用户信息失败' });
@@ -62,7 +62,7 @@ export function* getCurrentUserSaga() {
 // 获取用户列表saga
 export function* getUsersSaga() {
   try {
-    const response: unknown = yield call(api.get, '/user/users');
+    const response: unknown = yield call(userService.getUsers);
     yield put({ type: GET_USERS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: GET_USERS_FAILURE, payload: error.response.data.detail || '获取用户列表失败' });
@@ -73,7 +73,7 @@ export function* getUsersSaga() {
 export function* getUserSaga(action: any) {
   try {
     const { payload }: { payload: number } = action;
-    const response: unknown = yield call(api.get, `/user/users/${payload}`);
+    const response: unknown = yield call(userService.getUser, payload);
     yield put({ type: GET_USER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: GET_USER_FAILURE, payload: error.response.data.detail || '获取用户失败' });
@@ -85,7 +85,7 @@ export function* updateUserSaga(action: any) {
   try {
     const { payload } = action;
     const { id, ...userData } = payload;
-    const response: unknown = yield call(api.put, `/user/users/${id}`, userData);
+    const response: unknown = yield call(userService.updateUser, id, userData);
     yield put({ type: UPDATE_USER_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: UPDATE_USER_FAILURE, payload: error.response.data.detail || '更新用户失败' });
@@ -96,7 +96,7 @@ export function* updateUserSaga(action: any) {
 export function* deleteUserSaga(action: any) {
   try {
     const { payload }: { payload: number } = action;
-    yield call(api.delete, `/user/users/${payload}`);
+    yield call(userService.deleteUser, payload);
     yield put({ type: DELETE_USER_SUCCESS, payload });
   } catch (error: any) {
     yield put({ type: DELETE_USER_FAILURE, payload: error.response.data.detail || '删除用户失败' });

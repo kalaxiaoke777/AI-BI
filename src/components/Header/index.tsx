@@ -26,8 +26,8 @@ const Header: React.FC = () => {
       setCurrent('');
     } else if (path.startsWith('/funds')) {
       setCurrent('funds');
-    } else if (path.startsWith('/companies')) {
-      setCurrent('companies');
+    } else if (path.startsWith('/AI')) {
+      setCurrent('AI');
     } else if (path.startsWith('/query')) {
       setCurrent('query');
     } else if (path.startsWith('/rank')) {
@@ -68,9 +68,9 @@ const Header: React.FC = () => {
       label: <Link to="/funds">基金列表</Link>,
     },
     {
-      key: 'companies',
+      key: 'AI',
       icon: <FundOutlined />,
-      label: <Link to="/companies">基金公司</Link>,
+      label: <Link to="/AI">智能助理</Link>,
     },
     {
       key: 'query',

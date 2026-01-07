@@ -1,5 +1,5 @@
 import { call, put, takeLatest, all } from 'redux-saga/effects';
-import api from '../../services/api';
+import { holdingsService } from '../../services';
 import {
   FETCH_HOLDINGS_REQUEST,
   FETCH_HOLDINGS_SUCCESS,
@@ -21,7 +21,7 @@ import {
 // 获取持有基金列表saga
 export function* fetchHoldingsSaga() {
   try {
-    const response: unknown = yield call(api.get, '/ss-fund/holdings');
+    const response: unknown = yield call(holdingsService.getHoldings);
     yield put({ type: FETCH_HOLDINGS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_HOLDINGS_FAILURE, payload: error.message || '获取持有基金列表失败' });
@@ -31,7 +31,8 @@ export function* fetchHoldingsSaga() {
 // 购买基金saga
 export function* purchaseFundSaga(action: any) {
   try {
-    const response: unknown = yield call(api.post, '/ss-fund/holdings/purchase', action.payload);
+    const { fund_code, amount } = action.payload;
+    const response: unknown = yield call(holdingsService.purchaseFund, fund_code, amount);
     yield put({ type: PURCHASE_FUND_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: PURCHASE_FUND_FAILURE, payload: error.message || '购买基金失败' });
@@ -41,7 +42,8 @@ export function* purchaseFundSaga(action: any) {
 // 赎回基金saga
 export function* redeemFundSaga(action: any) {
   try {
-    const response: unknown = yield call(api.post, '/ss-fund/holdings/redeem', action.payload);
+    const { holding_id, shares } = action.payload;
+    const response: unknown = yield call(holdingsService.redeemFund, holding_id, shares);
     yield put({ type: REDEEM_FUND_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: REDEEM_FUND_FAILURE, payload: error.message || '赎回基金失败' });
@@ -51,7 +53,7 @@ export function* redeemFundSaga(action: any) {
 // 获取交易记录saga
 export function* fetchTransactionsSaga() {
   try {
-    const response: unknown = yield call(api.get, '/ss-fund/transactions');
+    const response: unknown = yield call(holdingsService.getTransactions);
     yield put({ type: FETCH_TRANSACTIONS_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_TRANSACTIONS_FAILURE, payload: error.message || '获取交易记录失败' });
@@ -61,7 +63,7 @@ export function* fetchTransactionsSaga() {
 // 获取总收益saga
 export function* fetchTotalProfitSaga() {
   try {
-    const response: unknown = yield call(api.get, '/ss-fund/total-profit');
+    const response: unknown = yield call(holdingsService.getTotalProfit);
     yield put({ type: FETCH_TOTAL_PROFIT_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: FETCH_TOTAL_PROFIT_FAILURE, payload: error.message || '获取总收益失败' });

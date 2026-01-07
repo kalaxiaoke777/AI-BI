@@ -17,6 +17,7 @@ import FavoriteFunds from './pages/FavoriteFunds';
 import Holdings from './pages/Holdings';
 import TransactionHistory from './pages/TransactionHistory';
 import ProfitAnalysis from './pages/ProfitAnalysis';
+import AI from './pages/AI';
 // import FundCompanyList from './pages/FundCompanyList';
 // import FundCompanyDetail from './pages/FundCompanyDetail';
 // import FundQuery from './pages/FundQuery';
@@ -35,7 +36,7 @@ function App() {
             <Route path="/index" element={<IndexAnalysis />} />
             <Route path="/funds" element={<FundList />} />
             <Route path="/funds/:fundId" element={<FundDetail />} />
-            <Route path="/companies" element={<div>基金公司列表页面</div>} />
+            <Route path="/AI" element={<AI/>} />
             <Route path="/companies/:companyId" element={<div>基金公司详情页面</div>} />
             <Route path="/query" element={<div>基金查询页面</div>} />
             <Route path="/rank" element={<div>基金排行页面</div>} />
