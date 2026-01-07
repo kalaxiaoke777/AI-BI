@@ -26,11 +26,8 @@ const UserManagement: React.FC = () => {
     if (editingUser) {
       // 编辑用户
       dispatch(updateUserRequest(editingUser.id, values));
-      message.success('用户更新成功');
     } else {
       // 新增用户
-      // TODO: 实现新增用户功能，需要添加对应的action和saga
-      message.success('用户创建成功');
     }
     setIsModalVisible(false);
   };
@@ -38,7 +35,6 @@ const UserManagement: React.FC = () => {
   // 处理删除用户
   const handleDeleteUser = (id: number) => {
     dispatch(deleteUserRequest(id));
-    message.success('用户删除成功');
   };
 
   return (

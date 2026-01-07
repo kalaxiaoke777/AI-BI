@@ -4,10 +4,10 @@ import { combineReducers } from 'redux';
 import userReducer from './userReducer';
 import fundsReducer from './fundsReducer';
 import companiesReducer from './companiesReducer';
+import favoriteFundsReducer from './favoriteFundsReducer';
+import holdingsReducer from './holdingsReducer';
 // 导入其他模块的reducer（后续会添加）
 // import queriesReducer from './queries';
-// import favoritesReducer from './favorites';
-// import holdingsReducer from './holdings';
 // import transactionsReducer from './transactions';
 // import profitReducer from './profit';
 // import indicesReducer from './indices';
@@ -17,10 +17,10 @@ const rootReducer = combineReducers({
   user: userReducer,
   funds: fundsReducer,
   companies: companiesReducer,
+  favoriteFunds: favoriteFundsReducer,
+  holdings: holdingsReducer,
   // 其他模块的reducer（后续会添加）
   // queries: queriesReducer,
-  // favorites: favoritesReducer,
-  // holdings: holdingsReducer,
   // transactions: transactionsReducer,
   // profit: profitReducer,
   // indices: indicesReducer,

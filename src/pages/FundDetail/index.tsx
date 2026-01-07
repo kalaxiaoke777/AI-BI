@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Card, Typography, Row, Col, Statistic, Descriptions, Button, Space } from 'antd';
+import { Card, Typography, Row, Col, Statistic, Descriptions, Button, Space, message, Modal, InputNumber } from 'antd';
 import { ArrowLeftOutlined, FundOutlined, StarOutlined, WalletOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchFundDetailRequest } from '../../redux/actions/fundActions';
+import { addFavoriteFundRequest } from '../../redux/actions/favoriteFundsActions';
+import { purchaseFundRequest } from '../../redux/actions/holdingsActions';
 import * as echarts from 'echarts';
 import type { FundCombinedParams } from '../../types/fund';
 import styles from './index.module.scss';
@@ -160,19 +162,6 @@ const FundDetail: React.FC = () => {
     }
   }, [chart, growth]);
 
-  // 格式化增长率显示，添加颜色和符号
-  const formatGrowth = (value: number | null) => {
-    if (value === null) return '-';
-    const isPositive = value > 0;
-    const growthClass = isPositive ? styles['growth-positive'] : value < 0 ? styles['growth-negative'] : '';
-    const prefix = isPositive ? '+' : '';
-    return (
-      <span className={`${styles['growth-value']} ${growthClass}`}>
-        {prefix}{value.toFixed(2)}%
-      </span>
-    );
-  };
-
   // 返回基金列表
   const handleBack = () => {
     navigate('/funds');
@@ -180,14 +169,54 @@ const FundDetail: React.FC = () => {
 
   // 添加到自选基金
   const handleAddToFavorites = () => {
-    // 这里将实现添加到自选基金的功能
-    console.log('添加到自选基金');
+    if (detail && detail.data[0].fund.id) {
+      dispatch(addFavoriteFundRequest({ fund_id: detail.data[0].fund.id }));
+      message.success('已添加到自选基金');
+    } else {
+      message.error('添加自选基金失败：缺少基金ID');
+    }
+  };
+
+  // 购买基金相关状态
+  const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false);
+  const [purchaseAmount, setPurchaseAmount] = useState<number>(1);
+
+  // 显示购买模态框
+  const showPurchaseModal = () => {
+    setIsPurchaseModalVisible(true);
+  };
+
+  // 隐藏购买模态框
+  const handlePurchaseModalCancel = () => {
+    setIsPurchaseModalVisible(false);
+    setPurchaseAmount(1);
+  };
+
+  // 确认购买
+  const handlePurchaseConfirm = () => {
+    if (detail && detail.data[0].fund.fund_code && purchaseAmount > 0) {
+      dispatch(purchaseFundRequest({ 
+        fund_code: detail.data[0].fund.fund_code, 
+        amount: purchaseAmount 
+      }));
+      message.success('购买成功');
+      setIsPurchaseModalVisible(false);
+      setPurchaseAmount(1);
+    } else {
+      message.error('购买失败：请输入有效的购买金额');
+    }
   };
 
   // 购买基金
   const handlePurchase = () => {
-    // 这里将实现购买基金的功能
-    console.log('购买基金');
+    showPurchaseModal();
+  };
+
+  // InputNumber onChange处理函数
+  const handleAmountChange = (value: number | null) => {
+    if (value !== null) {
+      setPurchaseAmount(value);
+    }
   };
 
   if (loading || !detail) {
@@ -437,6 +466,36 @@ const FundDetail: React.FC = () => {
           </Descriptions.Item>
         </Descriptions>
       </Card>
+      {/* 购买基金模态框 */}
+      <Modal
+        title="购买基金"
+        open={isPurchaseModalVisible}
+        onOk={handlePurchaseConfirm}
+        onCancel={handlePurchaseModalCancel}
+        okText="确认购买"
+        cancelText="取消"
+      >
+        <div className={styles['purchase-modal-content']}>
+          <h3>基金名称：{detail.data[0].fund.fund_name}</h3>
+          <h4>基金代码：{detail.data[0].fund.fund_code}</h4>
+          <h4>最新净值：{detail.data[0].fund.latest_nav}</h4>
+          <div className={styles['purchase-amount-section']}>
+            <label className={styles['amount-label']}>购买金额（元）：</label>
+            <InputNumber
+              min={1}
+              max={100000}
+              step={1}
+              value={purchaseAmount}
+              onChange={handleAmountChange}
+              className={styles['amount-input']}
+            />
+          </div>
+          <div className={styles['purchase-info']}>
+            <p>预计购买份额：{(purchaseAmount / detail.data[0].fund.latest_nav).toFixed(4)} 份</p>
+            <p>申购起点：{detail.data[0].fund.purchase_min_amount} 元</p>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
