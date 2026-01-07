@@ -25,8 +25,9 @@ export function* fetchFavoriteFundsSaga() {
 // 添加自选基金saga
 export function* addFavoriteFundSaga(action: any) {
   try {
-    const { fund_code } = action.payload;
-    const response: unknown = yield call(favoriteService.addToFavorites, fund_code);
+    console.log(action.payload);
+    
+    const response: unknown = yield call(favoriteService.addToFavorites, action.payload);
     yield put({ type: ADD_FAVORITE_FUND_SUCCESS, payload: response });
   } catch (error: any) {
     yield put({ type: ADD_FAVORITE_FUND_FAILURE, payload: error.message || '添加自选基金失败' });

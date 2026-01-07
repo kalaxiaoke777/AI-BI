@@ -4,6 +4,7 @@ import React from "react";
 import Chat, { Bubble, useMessages, Think } from "@chatui/core";
 // 引入样式
 import "@chatui/core/dist/index.css";
+import { aiChatService } from "../../services/ai/chat";
 
 const initialMessages = [
   {
@@ -62,15 +63,21 @@ const UserProfile: React.FC = () => {
 
       // TODO: 发送请求到后端
       // 模拟回复消息
-      setTimeout(() => {
+
         // 先删除 Think 消息
-        deleteMsg(thinkMsgId);
-        // 再显示实际回复
-        appendMsg({
-          type: "text",
-          content: { text: "亲，您遇到什么问题啦？请简要描述您的问题~" },
+
+        // 调用后端接口
+      aiChatService
+        .askAI(val)
+        .then((res: any) => {
+          deleteMsg(thinkMsgId);
+          // 再显示实际回复
+          appendMsg({
+            type: "text",
+            content: { text: res.answer },
+          });
         });
-      }, 1500);
+
     }
   }
 

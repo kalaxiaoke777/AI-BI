@@ -6,8 +6,8 @@ export const fundService = {
   getFundList: (params?: any) => api.get("/query/fund/basic", { params }),
 
   // 获取基金详情
-  getFundDetail: (fundCode: string) =>
-    api.get(`/query/fund/combined/${fundCode}`),
+  getFundDetail: (params?: any) =>
+    api.get(`/query/fund/combined`, { params }),
 
   // 获取基金历史净值
   getFundNetValueHistory: (fundCode: string, params?: any) =>

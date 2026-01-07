@@ -6,7 +6,7 @@ export const favoriteService = {
   getFavoriteFunds: () => api.get('/ss-fund/favorite-funds'),
   
   // 添加基金到自选
-  addToFavorites: (fundCode: string) => api.post('/ss-fund/favorite-funds', { fund_code: fundCode }),
+  addToFavorites: (fundCode: string) => api.post('/ss-fund/favorite-funds', fundCode),
   
   // 从自选移除基金
   removeFromFavorites: (fundCode: string) => api.delete(`/ss-fund/favorite-funds/${fundCode}`),
