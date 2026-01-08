@@ -1,0 +1,172 @@
+.holdings-container {
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.profit-overview-card {
+  margin-bottom: 20px;
+}
+
+.holdings-card {
+  margin-bottom: 20px;
+}
+
+.holdings-table {
+  width: 100%;
+}
+
+.fund-name-cell {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  
+  &:hover {
+    color: #1890ff;
+  }
+}
+
+.fund-icon {
+  margin-right: 8px;
+  color: #1890ff;
+}
+
+.fund-name {
+  font-weight: 500;
+}
+
+/* 赎回模态框样式 */
+.redeem-modal {
+  .ant-modal-header {
+    border-bottom: none;
+    padding: 20px 24px 10px;
+  }
+  
+  .ant-modal-body {
+    padding: 20px 24px;
+  }
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+  
+  .anticon {
+    margin-right: 8px;
+    color: #ff4d4f;
+  }
+}
+
+.modal-close-btn {
+  padding: 0;
+  height: auto;
+  line-height: 1;
+  
+  &:hover {
+    background-color: transparent;
+    color: #ff4d4f;
+  }
+}
+
+.redeem-modal-content {
+  .fund-info {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    
+    .fund-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #262626;
+      margin-bottom: 4px;
+    }
+    
+    .fund-code {
+      font-size: 14px;
+      color: #8c8c8c;
+    }
+  }
+  
+  .holdings-info {
+    margin-bottom: 24px;
+    
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+      
+      .label {
+        color: #8c8c8c;
+      }
+      
+      .value {
+        font-weight: 500;
+        color: #262626;
+      }
+    }
+  }
+  
+  .redeem-input-section {
+    margin-bottom: 24px;
+    
+    .input-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #262626;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    .input-wrapper {
+      margin-bottom: 8px;
+    }
+    
+    .shares-input {
+      width: 100%;
+    }
+    
+    .input-hint {
+      font-size: 12px;
+      color: #8c8c8c;
+    }
+  }
+  
+  .redeem-amount-section {
+    margin-bottom: 24px;
+    padding: 16px;
+    background-color: #f6f8fa;
+    border-radius: 4px;
+    
+    .amount-label {
+      font-size: 14px;
+      color: #8c8c8c;
+      margin-bottom: 4px;
+      display: block;
+    }
+    
+    .amount-value {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ff4d4f;
+    }
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    
+    .cancel-btn {
+      border-radius: 4px;
+    }
+    
+    .confirm-btn {
+      border-radius: 4px;
+    }
+  }
+}
