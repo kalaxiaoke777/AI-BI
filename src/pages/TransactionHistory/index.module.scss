@@ -1,44 +1,99 @@
-.transactionHistoryContainer {
-  height: 100%;
+.transaction-history-container {
+  padding: 20px;
+  background-color: #f0f2f5;
+  min-height: 100vh;
+}
+
+.transaction-history-card {
+  margin-bottom: 20px;
+}
+
+.transactions-table {
+  width: 100%;
+  
+  /* 确保整个表格行都有背景色 */
+  .ant-table-tbody {
+    /* 已完成交易行样式 */
+    > tr.completed-row {
+      background-color: #f6ffed !important;
+      transition: all 0.3s;
+      
+      /* 覆盖td样式，确保整个行颜色一致 */
+      > td {
+        background-color: transparent !important;
+        border-bottom: 1px solid #e6f7ff;
+      }
+      
+      /* 悬停效果 */
+      &:hover {
+        background-color: #f0f9e8 !important;
+        
+        > td {
+          background-color: transparent !important;
+        }
+      }
+    }
+    
+    /* 处理中交易行样式 */
+    > tr.pending-row {
+      background-color: #fff7e6 !important;
+      transition: all 0.3s;
+      
+      /* 覆盖td样式，确保整个行颜色一致 */
+      > td {
+        background-color: transparent !important;
+        border-bottom: 1px solid #fff1d5;
+      }
+      
+      /* 悬停效果 */
+      &:hover {
+        background-color: #fff1d5 !important;
+        
+        > td {
+          background-color: transparent !important;
+        }
+      }
+    }
+  }
+  
+  /* 确保表头样式不受影响 */
+  .ant-table-thead > tr > th {
+    background-color: #fafafa !important;
+  }
+}
+
+.fund-name-cell {
   display: flex;
-  flex-direction: column;
-  padding: 0;
-  margin: -24px;
-  background-color: #ffffff;
-  overflow: hidden;
+  align-items: center;
 }
 
-.transactionHistoryCard {
-  margin: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+.fund-icon {
+  margin-right: 8px;
+  color: #1890ff;
 }
 
-.placeholderContent {
-  padding: 20px 0;
-  text-align: center;
-  color: #666;
-  font-size: 16px;
+.fund-name {
+  font-weight: 500;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .transactionHistoryCard {
-    margin: 16px;
-  }
-  
-  .placeholderContent {
-    padding: 16px 0;
-    font-size: 14px;
-  }
+/* 交易类型样式 */
+.purchase-type {
+  color: #52c41a;
+  font-weight: 500;
 }
 
-@media (max-width: 480px) {
-  .transactionHistoryCard {
-    margin: 8px;
-  }
-  
-  .placeholderContent {
-    padding: 12px 0;
-    font-size: 13px;
-  }
+.redeem-type {
+  color: #ff4d4f;
+  font-weight: 500;
+}
+
+/* 交易状态样式 */
+.completed-status {
+  color: #52c41a;
+  font-weight: 500;
+}
+
+.pending-status {
+  color: #faad14;
+  font-weight: 500;
 }
