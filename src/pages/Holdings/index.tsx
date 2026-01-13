@@ -71,7 +71,7 @@ const Holdings: React.FC = () => {
   };
 
   // 确认赎回
-  const handleRedeemConfirm = () => {
+  const handleRedeemConfirm = async () => {
     if (!selectedHolding) return;
 
     if (redeemShares <= 0) {
@@ -86,25 +86,19 @@ const Holdings: React.FC = () => {
 
     setIsRedeeming(true);
 
-    dispatch(
+    await dispatch(
       redeemFundRequest({
         holding_id: selectedHolding.id,
         shares: redeemShares,
       })
-    )
-      .then(() => {
-        message.success("赎回申请提交成功");
-        setRedeemModalVisible(false);
-        // 刷新持有基金列表
-        dispatch(fetchHoldingsRequest());
-        dispatch(fetchTotalProfitRequest());
-      })
-      .catch((err) => {
-        message.error(`赎回失败: ${err.message || "操作失败"}`);
-      })
-      .finally(() => {
-        setIsRedeeming(false);
-      });
+    );
+
+    // 刷新持有基金列表
+    dispatch(fetchHoldingsRequest());
+    dispatch(fetchTotalProfitRequest());
+
+    setIsRedeeming(false);
+    setRedeemModalVisible(false);
   };
 
   // 持有基金表格列配置
@@ -277,17 +271,7 @@ const Holdings: React.FC = () => {
 
       {/* 赎回模态框 */}
       <Modal
-        title={
-          <div className={styles["modal-title"]}>
-            <SwapOutlined /> 赎回基金
-            <Button
-              type="text"
-              icon={<CloseOutlined />}
-              onClick={() => setRedeemModalVisible(false)}
-              className={styles["modal-close-btn"]}
-            />
-          </div>
-        }
+        title={<div className={styles["modal-title"]}>赎回基金</div>}
         open={redeemModalVisible}
         onCancel={() => setRedeemModalVisible(false)}
         footer={null}
