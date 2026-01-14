@@ -29,9 +29,18 @@ const Pendings: React.FC = () => {
 
   // 处理删除自选基金
   const handleRemoveFavorite = (id: number) => {
-    message.success("已从自选基金中删除");
+    holdingsService
+      .cancelTransaction(id)
+      .then((res: any) => {
+        setList((prevList) =>
+          prevList.filter((item) => item.id !== id)
+        );
+        message.success("已从自选基金中删除");
+      })
+      .catch((err) => {
+        setError(err.message || "删除自选基金失败");
+      });
   };
-
   // 表格列配置
   const columns = [
     {

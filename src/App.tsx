@@ -54,7 +54,7 @@ function App() {
             <Route element={<PrivateRoute />}>
               <Route path="/users" element={<UserManagement />} />
               <Route path="/user/profile" element={<UserProfile />} />
-              <Route path="/user/favorites" element={<FavoriteFunds />} />
+              {/* <Route path="/user/favorites" element={<FavoriteFunds />} /> */}
               <Route path="/user/pendings" element={<Pendings />} />
               <Route path="/user/holdings" element={<Holdings />} />
               <Route

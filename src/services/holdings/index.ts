@@ -22,6 +22,9 @@ export const holdingsService = {
 
   // 获取待处理交易
   getPendingTransactions: () => api.get("/ss-fund/pending-transactions"),
+  // 取消交易
+  cancelTransaction: (transactionId: number) =>
+    api.post(`/ss-fund/pending-transactions/${transactionId}/cancel`),
 };
 
 export default holdingsService;

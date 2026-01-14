@@ -120,11 +120,11 @@ const Header: React.FC = () => {
       icon: <UserOutlined />,
       label: "个人信息",
     },
-    {
-      key: "/user/favorites",
-      icon: <StarOutlined />,
-      label: "自选基金",
-    },
+    // {
+    //   key: "/user/favorites",
+    //   icon: <StarOutlined />,
+    //   label: "自选基金",
+    // },
     {
       key: "/user/pendings",
       icon: <HistoryOutlined />,
