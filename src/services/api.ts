@@ -3,7 +3,7 @@ import { message } from "antd";
 // 创建axios实例
 const api = axios.create({
   baseURL: "http://localhost:8000/api/v1",
-  timeout: 10000,
+  timeout: 100000,
 });
 
 // 请求拦截器

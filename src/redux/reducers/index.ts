@@ -1,11 +1,11 @@
-import { combineReducers } from 'redux';
+import { combineReducers } from "redux";
 
 // 导入各个模块的reducer
-import userReducer from './userReducer';
-import fundsReducer from './fundsReducer';
-import companiesReducer from './companiesReducer';
-import favoriteFundsReducer from './favoriteFundsReducer';
-import holdingsReducer from './holdingsReducer';
+import userReducer from "./userReducer";
+import fundsReducer from "./fundsReducer";
+import companiesReducer from "./companiesReducer";
+import favoriteFundsReducer from "./favoriteFundsReducer";
+import holdingsReducer from "./holdingsReducer";
 // 导入其他模块的reducer（后续会添加）
 // import queriesReducer from './queries';
 // import transactionsReducer from './transactions';
