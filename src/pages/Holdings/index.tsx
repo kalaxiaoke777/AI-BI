@@ -9,6 +9,7 @@ import {
 } from "../../redux/actions/holdingsActions";
 import { useNavigate } from "react-router-dom";
 import RedeemModal from "../../components/Fund/Redeem";
+import SynchronizedPositionModal from "../../components/Fund/SynchronizedPosition";
 import styles from "./index.module.scss";
 
 const Holdings: React.FC = () => {
@@ -25,6 +26,8 @@ const Holdings: React.FC = () => {
   const [redeemModalVisible, setRedeemModalVisible] = useState(false);
   const [selectedHolding, setSelectedHolding] = useState<any>(null);
   const [isRedeeming, setIsRedeeming] = useState(false);
+  const [synchronizedPositionModalVisible, setSynchronizedPositionModalVisible] = useState(false);
+  const [isSynchronized, setIsSynchronized] = useState(false);
 
   useEffect(() => {
     dispatch(fetchHoldingsRequest());
@@ -46,6 +49,10 @@ const Holdings: React.FC = () => {
     setSelectedHolding(holding);
     setRedeemModalVisible(true);
   };
+  // 打开同步持仓模态框
+  const handleSynchronizedPositionClick = () => {
+    setSynchronizedPositionModalVisible(true);
+  };
 
   // 确认赎回
   const handleRedeemConfirm = async (shares: number) => {
@@ -66,6 +73,25 @@ const Holdings: React.FC = () => {
 
     setIsRedeeming(false);
     setRedeemModalVisible(false);
+  };
+  // 确认同步持仓
+  const handleSynchronizedPositionConfirm = async (syncData: any) => {
+    setIsSynchronized(true);
+
+    try {
+      // 调用同步持仓action
+      await dispatch(syncHoldingsRequest(syncData));
+      
+      // 刷新持有基金列表
+      dispatch(fetchHoldingsRequest());
+      dispatch(fetchTotalProfitRequest());
+      
+      setSynchronizedPositionModalVisible(false);
+    } catch (error) {
+      console.error('同步持仓失败:', error);
+    } finally {
+      setIsSynchronized(false);
+    }
   };
 
   // 持有基金表格列配置
@@ -234,7 +260,11 @@ const Holdings: React.FC = () => {
           </Row>
         </Card>
       )}
-      <Button className={styles["action-button"]} type="primary">
+      <Button
+        className={styles["action-button"]}
+        type="primary"
+        onClick={() => handleSynchronizedPositionClick(selectedHolding)}
+      >
         同步持仓
       </Button>
 
@@ -260,6 +290,13 @@ const Holdings: React.FC = () => {
         onCancel={() => setRedeemModalVisible(false)}
         onConfirm={handleRedeemConfirm}
         isRedeeming={isRedeeming}
+      />
+      {/* 同步持仓模态框 - 使用组件 */}
+      <SynchronizedPositionModal
+        visible={synchronizedPositionModalVisible}
+        onCancel={() => setSynchronizedPositionModalVisible(false)}
+        onConfirm={handleSynchronizedPositionConfirm}
+        isLoading={isSynchronized}
       />
     </div>
   );

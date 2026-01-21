@@ -6,18 +6,11 @@ import { useAppDispatch, useAppSelector } from '../../hooks/useRedux';
 import { fetchFundsRequest } from '../../redux/actions/fundActions';
 import type { FundBasic, FundFilters } from '../../types/fund';
 import styles from './index.module.scss';
+import Tools from '../../utils/tools';
 
 const { Title } = Typography;
 const { Option } = Select;
 
-// 防抖函数
-const debounce = <T extends (...args: any[]) => any>(func: T, delay: number) => {
-  let timeoutId: ReturnType<typeof setTimeout>;
-  return (...args: Parameters<T>) => {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func(...args), delay);
-  };
-};
 
 const FundList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -32,7 +25,7 @@ const FundList: React.FC = () => {
   
   // 创建防抖搜索函数，延迟300ms
   const debouncedSearch = useMemo(
-    () => debounce((values: any) => {
+    () => Tools.debounce((values: any) => {
       const params: FundFilters = {
         ...searchParams,
         ...values,

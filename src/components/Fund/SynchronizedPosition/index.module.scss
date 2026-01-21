@@ -1,0 +1,136 @@
+/* 同步持仓模态框样式 */
+.synchronized-modal {
+  .ant-modal-content {
+    border-radius: 8px;
+  }
+}
+
+.modal-title {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  gap: 8px;
+}
+
+.synchronized-card {
+  margin: 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+}
+
+.synchronized-form {
+  padding: 0;
+}
+
+/* 基金搜索容器 */
+.fund-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.fund-search-input {
+  width: 100%;
+  border-radius: 4px;
+}
+
+/* 搜索结果 */
+.search-results {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: -1px;
+}
+
+.search-result-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  &:active {
+    background-color: #e6f7ff;
+  }
+}
+
+.result-fund-name {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.result-fund-code {
+  font-size: 12px;
+  color: #999;
+}
+
+/* 搜索加载状态 */
+.search-loading {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 0 0 4px 4px;
+  padding: 10px;
+  text-align: center;
+  color: #1890ff;
+  font-size: 14px;
+  margin-top: -1px;
+}
+
+/* 输入框样式 */
+.amount-input,
+.profit-input,
+.share-input {
+  border-radius: 4px;
+}
+
+/* 模态框操作按钮 */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.cancel-btn {
+  border-radius: 4px;
+}
+
+.confirm-btn {
+  border-radius: 4px;
+}
+
+/* 响应式设计 */
+@media (max-width: 576px) {
+  .synchronized-modal {
+    width: 90% !important;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+
+    .ant-btn {
+      width: 100%;
+    }
+  }
+}
