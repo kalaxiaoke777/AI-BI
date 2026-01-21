@@ -1,21 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Table,
-  Row,
-  Col,
-  Statistic,
-  Button,
-  Modal,
-  InputNumber,
-  message,
-} from "antd";
-import {
-  FundOutlined,
-  WalletOutlined,
-  SwapOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
+import { Card, Table, Row, Col, Statistic, Button } from "antd";
+import { FundOutlined, WalletOutlined, SwapOutlined } from "@ant-design/icons";
 import { useAppDispatch, useAppSelector } from "../../hooks/useRedux";
 import {
   fetchHoldingsRequest,
@@ -23,6 +8,7 @@ import {
   redeemFundRequest,
 } from "../../redux/actions/holdingsActions";
 import { useNavigate } from "react-router-dom";
+import RedeemModal from "../../components/Fund/Redeem";
 import styles from "./index.module.scss";
 
 const Holdings: React.FC = () => {
@@ -38,7 +24,6 @@ const Holdings: React.FC = () => {
   // 赎回相关状态
   const [redeemModalVisible, setRedeemModalVisible] = useState(false);
   const [selectedHolding, setSelectedHolding] = useState<any>(null);
-  const [redeemShares, setRedeemShares] = useState<number>(0);
   const [isRedeeming, setIsRedeeming] = useState(false);
 
   useEffect(() => {
@@ -59,38 +44,20 @@ const Holdings: React.FC = () => {
   // 打开赎回模态框
   const handleRedeemClick = (holding: any) => {
     setSelectedHolding(holding);
-    setRedeemShares(0);
     setRedeemModalVisible(true);
   };
 
-  // 处理赎回份额变化
-  const handleSharesChange = (value: number | null) => {
-    if (value !== null) {
-      setRedeemShares(value);
-    }
-  };
-
   // 确认赎回
-  const handleRedeemConfirm = async () => {
+  const handleRedeemConfirm = async (shares: number) => {
     if (!selectedHolding) return;
-
-    if (redeemShares <= 0) {
-      message.error("赎回份额必须大于0");
-      return;
-    }
-
-    if (redeemShares > selectedHolding.shares) {
-      message.error("赎回份额不能超过持有份额");
-      return;
-    }
 
     setIsRedeeming(true);
 
     await dispatch(
       redeemFundRequest({
         holding_id: selectedHolding.id,
-        shares: redeemShares,
-      })
+        shares: shares,
+      }),
     );
 
     // 刷新持有基金列表
@@ -123,6 +90,20 @@ const Holdings: React.FC = () => {
           <span className={styles["fund-name"]}>{text}</span>
         </div>
       ),
+    },
+    {
+      title: "今日估值涨幅",
+      dataIndex: "shares",
+      key: "today_profit_rate",
+      width: 120,
+      render: (value: number) => value.toFixed(4),
+    },
+    {
+      title: "持有份额",
+      dataIndex: "shares",
+      key: "shares",
+      width: 120,
+      render: (value: number) => value.toFixed(4),
     },
     {
       title: "持有份额",
@@ -253,6 +234,9 @@ const Holdings: React.FC = () => {
           </Row>
         </Card>
       )}
+      <Button className={styles["action-button"]} type="primary">
+        同步持仓
+      </Button>
 
       {/* 持有基金列表 */}
       <Card
@@ -269,102 +253,14 @@ const Holdings: React.FC = () => {
         />
       </Card>
 
-      {/* 赎回模态框 */}
-      <Modal
-        title={<div className={styles["modal-title"]}>赎回基金</div>}
-        open={redeemModalVisible}
+      {/* 赎回模态框 - 使用组件 */}
+      <RedeemModal
+        visible={redeemModalVisible}
+        holding={selectedHolding}
         onCancel={() => setRedeemModalVisible(false)}
-        footer={null}
-        width={500}
-        className={styles["redeem-modal"]}
-      >
-        {selectedHolding && (
-          <div className={styles["redeem-modal-content"]}>
-            <div className={styles["fund-info"]}>
-              <div className={styles["fund-name"]}>
-                {selectedHolding.fund_name}
-              </div>
-              <div className={styles["fund-code"]}>
-                {selectedHolding.fund_code}
-              </div>
-            </div>
-
-            <div className={styles["holdings-info"]}>
-              <div className={styles["info-item"]}>
-                <span className={styles["label"]}>当前持有份额：</span>
-                <span className={styles["value"]}>
-                  {selectedHolding.shares.toFixed(4)}
-                </span>
-              </div>
-              <div className={styles["info-item"]}>
-                <span className={styles["label"]}>当前净值：</span>
-                <span className={styles["value"]}>
-                  {selectedHolding.current_price.toFixed(4)}
-                </span>
-              </div>
-              <div className={styles["info-item"]}>
-                <span className={styles["label"]}>持仓成本：</span>
-                <span className={styles["value"]}>
-                  ¥{selectedHolding.total_cost.toFixed(2)}
-                </span>
-              </div>
-              <div className={styles["info-item"]}>
-                <span className={styles["label"]}>当前市值：</span>
-                <span className={styles["value"]}>
-                  ¥
-                  {(
-                    selectedHolding.shares * selectedHolding.current_price
-                  ).toFixed(2)}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles["redeem-input-section"]}>
-              <div className={styles["input-label"]}>赎回份额</div>
-              <div className={styles["input-wrapper"]}>
-                <InputNumber
-                  min={0.0001}
-                  max={selectedHolding.shares}
-                  step={0.0001}
-                  value={redeemShares}
-                  onChange={handleSharesChange}
-                  placeholder="请输入赎回份额"
-                  className={styles["shares-input"]}
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div className={styles["input-hint"]}>
-                可赎回份额：{selectedHolding.shares.toFixed(4)}
-              </div>
-            </div>
-
-            <div className={styles["redeem-amount-section"]}>
-              <div className={styles["amount-label"]}>预计赎回金额</div>
-              <div className={styles["amount-value"]}>
-                ¥{(redeemShares * selectedHolding.current_price).toFixed(2)}
-              </div>
-            </div>
-
-            <div className={styles["modal-actions"]}>
-              <Button
-                onClick={() => setRedeemModalVisible(false)}
-                className={styles["cancel-btn"]}
-              >
-                取消
-              </Button>
-              <Button
-                type="primary"
-                danger
-                onClick={handleRedeemConfirm}
-                loading={isRedeeming}
-                className={styles["confirm-btn"]}
-              >
-                确认赎回
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
+        onConfirm={handleRedeemConfirm}
+        isRedeeming={isRedeeming}
+      />
     </div>
   );
 };
