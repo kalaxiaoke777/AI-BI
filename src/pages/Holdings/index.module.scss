@@ -1,16 +1,52 @@
 .holdings-container {
   padding: 20px;
   background-color: #f0f2f5;
-  // min-height: 100vh;
+  min-height: 100vh;
   height: 100%;
-  overflow: "auto";
+  overflow: auto;
+
+  .action-buttons {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-start;
+  }
+
   .action-button {
     margin-left: 8px;
     font-size: 14px;
   }
+
   .holdings-card {
     margin-bottom: 20px;
     margin-top: 10px;
+
+    .card-title-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .batch-delete-button {
+      font-size: 14px;
+    }
+  }
+
+  .add-button {
+    margin-bottom: 8px;
+  }
+
+  .redeem-button {
+    margin-left: 8px;
+  }
+
+  .holdings-table {
+    overflow-x: auto;
+
+    .ant-table-body {
+      overflow-y: auto;
+      max-height: 600px;
+    }
   }
 }
 

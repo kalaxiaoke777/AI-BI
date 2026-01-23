@@ -6,8 +6,7 @@ export const fundService = {
   getFundList: (params?: any) => api.get("/query/fund/basic", { params }),
 
   // 获取基金详情
-  getFundDetail: (params?: any) =>
-    api.get(`/query/fund/combined`, { params }),
+  getFundDetail: (params?: any) => api.get(`/query/fund/combined`, { params }),
 
   // 获取基金历史净值
   getFundNetValueHistory: (fundCode: string, params?: any) =>
@@ -35,6 +34,7 @@ export const fundService = {
   // 获取基金公司发行的基金列表
   getCompanyFunds: (companyId: string) =>
     api.get(`/fund/companies/${companyId}/fund`),
+  // 同步持仓
 };
 
 export default fundService;

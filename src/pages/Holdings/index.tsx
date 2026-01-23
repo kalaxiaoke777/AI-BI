@@ -19,31 +19,30 @@ const Holdings: React.FC = () => {
     list: holdingsList,
     totalProfit,
     loading,
-    error,
   } = useAppSelector((state) => state.holdings);
-
   // 赎回相关状态
   const [redeemModalVisible, setRedeemModalVisible] = useState(false);
   const [selectedHolding, setSelectedHolding] = useState<any>(null);
   const [isRedeeming, setIsRedeeming] = useState(false);
-  const [synchronizedPositionModalVisible, setSynchronizedPositionModalVisible] = useState(false);
+  const [
+    synchronizedPositionModalVisible,
+    setSynchronizedPositionModalVisible,
+  ] = useState(false);
   const [isSynchronized, setIsSynchronized] = useState(false);
-
+  // 批量选择状态
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   useEffect(() => {
     dispatch(fetchHoldingsRequest());
     dispatch(fetchTotalProfitRequest());
   }, [dispatch]);
-
   // 收益颜色样式
   const getProfitColor = (value: number) => {
     return value >= 0 ? "#ff4d4f" : "#52c41a";
   };
-
   // 跳转到基金详情页
   const handleFundClick = (fundCode: string) => {
     navigate(`/funds/${fundCode}`);
   };
-
   // 打开赎回模态框
   const handleRedeemClick = (holding: any) => {
     setSelectedHolding(holding);
@@ -53,49 +52,61 @@ const Holdings: React.FC = () => {
   const handleSynchronizedPositionClick = () => {
     setSynchronizedPositionModalVisible(true);
   };
-
   // 确认赎回
   const handleRedeemConfirm = async (shares: number) => {
     if (!selectedHolding) return;
-
     setIsRedeeming(true);
-
     await dispatch(
       redeemFundRequest({
         holding_id: selectedHolding.id,
         shares: shares,
       }),
     );
-
     // 刷新持有基金列表
     dispatch(fetchHoldingsRequest());
     dispatch(fetchTotalProfitRequest());
-
     setIsRedeeming(false);
     setRedeemModalVisible(false);
   };
   // 确认同步持仓
-  const handleSynchronizedPositionConfirm = async (syncData: any) => {
+  const handleSynchronizedPositionConfirm = async () => {
     setIsSynchronized(true);
-
     try {
-      // 调用同步持仓action
-      await dispatch(syncHoldingsRequest(syncData));
-      
       // 刷新持有基金列表
       dispatch(fetchHoldingsRequest());
       dispatch(fetchTotalProfitRequest());
-      
       setSynchronizedPositionModalVisible(false);
     } catch (error) {
-      console.error('同步持仓失败:', error);
+      console.error("同步持仓失败:", error);
     } finally {
       setIsSynchronized(false);
     }
   };
-
   // 持有基金表格列配置
   const holdingsColumns = [
+    // 添加选择列
+    {
+      title: (
+        <div className={styles["table-header"]}>
+          <span>选择</span>
+          {selectedRowKeys.length > 0 && (
+            <Button
+              className={styles["delete-selected-button"]}
+              type="primary"
+              danger
+              onClick={() => handleDeleteSelected()}
+              size="small"
+              style={{ marginLeft: 10 }}
+            >
+              删除所选 {selectedRowKeys.length} 项
+            </Button>
+          )}
+        </div>
+      ),
+      key: "selection",
+      type: "selection",
+      width: 80,
+    },
     {
       title: "基金代码",
       dataIndex: "fund_code",
@@ -119,17 +130,10 @@ const Holdings: React.FC = () => {
     },
     {
       title: "今日估值涨幅",
-      dataIndex: "shares",
+      dataIndex: "today_profit_rate",
       key: "today_profit_rate",
       width: 120,
-      render: (value: number) => value.toFixed(4),
-    },
-    {
-      title: "持有份额",
-      dataIndex: "shares",
-      key: "shares",
-      width: 120,
-      render: (value: number) => value.toFixed(4),
+      render: (value: number) => (value ? value.toFixed(4) : "0.0000"),
     },
     {
       title: "持有份额",
@@ -191,20 +195,50 @@ const Holdings: React.FC = () => {
     {
       title: "操作",
       key: "action",
-      width: 100,
-      render: (text: string, record: any) => (
-        <Button
-          type="primary"
-          danger
-          icon={<SwapOutlined />}
-          onClick={() => handleRedeemClick(record)}
-          size="small"
-        >
-          赎回
-        </Button>
+      width: 180,
+      render: (_: string, record: any) => (
+        <div style={{ display: "flex", gap: 8 }}>
+          <Button
+            className={styles["add-button"]}
+            type="primary"
+            icon={<FundOutlined />}
+            onClick={() => handleFundClick(record.fund_code)}
+            size="small"
+          >
+            详情
+          </Button>
+          <Button
+            className={styles["redeem-button"]}
+            type="primary"
+            danger
+            icon={<SwapOutlined />}
+            onClick={() => handleRedeemClick(record)}
+            size="small"
+          >
+            赎回
+          </Button>
+        </div>
       ),
     },
   ];
+
+  // 处理选择变化
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  // 批量删除所选基金
+  const handleDeleteSelected = () => {
+    if (selectedRowKeys.length === 0) return;
+
+    // 这里可以添加删除确认弹窗
+    console.log("删除所选基金:", selectedRowKeys);
+    // 实际删除逻辑需要调用API
+    // 清空选择
+    setSelectedRowKeys([]);
+    // 刷新列表
+    dispatch(fetchHoldingsRequest());
+  };
 
   return (
     <div className={styles["holdings-container"]}>
@@ -260,18 +294,33 @@ const Holdings: React.FC = () => {
           </Row>
         </Card>
       )}
-      <Button
-        className={styles["action-button"]}
-        type="primary"
-        onClick={() => handleSynchronizedPositionClick(selectedHolding)}
-      >
-        同步持仓
-      </Button>
+      <div className={styles["action-buttons"]}>
+        <Button
+          className={styles["action-button"]}
+          type="primary"
+          onClick={handleSynchronizedPositionClick}
+        >
+          同步持仓
+        </Button>
+      </div>
 
       {/* 持有基金列表 */}
       <Card
         className={styles["holdings-card"]}
-        title="持有基金"
+        title={
+          <div className={styles["card-title-container"]}>
+            <span>持有基金</span>
+            <Button
+              className={styles["batch-delete-button"]}
+              type="primary"
+              danger
+              onClick={handleDeleteSelected}
+              disabled={selectedRowKeys.length === 0}
+            >
+              批量删除 ({selectedRowKeys.length})
+            </Button>
+          </div>
+        }
         loading={loading}
       >
         <Table
@@ -280,6 +329,11 @@ const Holdings: React.FC = () => {
           rowKey="id"
           pagination={{ pageSize: 10 }}
           className={styles["holdings-table"]}
+          // 添加选择功能
+          rowSelection={{
+            selectedRowKeys,
+            onChange: onSelectChange,
+          }}
         />
       </Card>
 
@@ -295,7 +349,7 @@ const Holdings: React.FC = () => {
       <SynchronizedPositionModal
         visible={synchronizedPositionModalVisible}
         onCancel={() => setSynchronizedPositionModalVisible(false)}
-        onConfirm={handleSynchronizedPositionConfirm}
+        onConfirm={() => handleSynchronizedPositionConfirm()}
         isLoading={isSynchronized}
       />
     </div>

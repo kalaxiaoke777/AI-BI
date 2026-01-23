@@ -25,6 +25,8 @@ export const holdingsService = {
   // 取消交易
   cancelTransaction: (transactionId: number) =>
     api.post(`/ss-fund/pending-transactions/${transactionId}/cancel`),
+  synchronizedPosition: (params?: any) =>
+    api.post(`/ss-fund/synchronized`, params),
 };
 
 export default holdingsService;

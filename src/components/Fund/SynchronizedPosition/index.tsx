@@ -17,6 +17,7 @@ import {
 } from "@ant-design/icons";
 import styles from "./index.module.scss";
 import fundService from "../../../services/fund";
+import holdingsService from "../../../services/holdings";
 
 const { Option } = Select;
 const { Item } = Form;
@@ -98,7 +99,19 @@ const SynchronizedPositionModal: React.FC<SynchronizedPositionModalProps> = ({
     try {
       const values = await form.validateFields();
       console.log(values);
-      // onConfirm(values);
+      // 调用同步持仓接口
+      const res: any = await holdingsService.synchronizedPosition(values);
+      if (res.status === "success") {
+        message.success("同步持仓成功");
+        form.resetFields();
+        setFundNames([]);
+        setSearchValue("");
+        onCancel();
+        onConfirm(res.data);
+      } else {
+        message.error("同步持仓失败");
+        onCancel();
+      }
     } catch (error) {
       console.log(error);
       message.error("请完善同步信息");
